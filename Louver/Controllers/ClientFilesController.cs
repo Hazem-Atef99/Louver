@@ -38,12 +38,8 @@ namespace Louver.Controllers
         [HttpGet]
         public async Task<IEnumerable<clientFileDTO>> GetClientFiles()
         {
-            //var parameter = new List<SqlParameter>();
-            //parameter.Add(new SqlParameter("@pFlag", 1));
-            //parameter.Add(new SqlParameter("@pStatusID",4));
-            //var clientFilesData= await _context.ClientFiles.FromSqlRaw<ClientFile>("exec dbo.GetClientFile @pFlag, @pStatusID ", parameter.ToArray()).ToListAsync();
-            //return clientFilesData;
-            var clientFilesData= await _context.ClientFiles.Where(c=>c.StatusId==4).ToListAsync();
+           
+            var clientFilesData= await _context.ClientFiles.Where(c=>c.StatusId==4).Include(c=>c.Client).Include(c=>c.ClientFileProperties).ToListAsync();
             var results = _mapper.Map<IEnumerable<clientFileDTO>>(clientFilesData);
             return results;
 
@@ -51,20 +47,20 @@ namespace Louver.Controllers
 
         // GET: api/ClientFiles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ClientFile>> GetClientFile(int id)
+        public async Task<ActionResult<clientFileDTO>> GetClientFile(int id)
         {
           if (_context.ClientFiles == null)
           {
               return NotFound();
           }
-            var clientFile = await _context.ClientFiles.FindAsync(id);
-
-            if (clientFile == null)
+            var clientFileData = await _context.ClientFiles.Include(c => c.Client).Include(c => c.ClientFileProperties).FirstOrDefaultAsync(c => c.ClientFileId == id);
+            var result =_mapper.Map<clientFileDTO>(clientFileData);
+            if (clientFileData == null)
             {
                 return NotFound();
             }
 
-            return clientFile;
+            return result;
         }
 
         // PUT: api/ClientFiles/5
