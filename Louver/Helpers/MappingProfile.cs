@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Louver.DataModel;
-//using Louver.dataModel;
 using Louver.Models;
 
 namespace Louver.Helpers
@@ -9,7 +8,8 @@ namespace Louver.Helpers
     {
         public MappingProfile() {
             CreateMap<ClientFile, clientFileDTO>();
-            //CreateMap<ClientFileModel, ClientFile>();
+            CreateMap<Status, statusDTO>();
+            CreateMap<updateClientFile, ClientFile>();
         }
 
     }

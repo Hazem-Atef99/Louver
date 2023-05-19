@@ -36,10 +36,10 @@ namespace Louver.Controllers
 
         // GET: api/ClientFiles
         [HttpGet]
-        public async Task<IEnumerable<clientFileDTO>> GetClientFiles()
+        public async Task<IEnumerable<clientFileDTO>> GetClientFiles([FromQuery]QueryPrameters queryPrameters)
         {
            
-            var clientFilesData= await _context.ClientFiles.Where(c=>c.StatusId==4).Include(c=>c.Client).Include(c=>c.ClientFileProperties).ToListAsync();
+             var clientFilesData= await _context.ClientFiles.Where(c=>c.StatusId==4).Include(c=>c.Client).Include(c=>c.ClientFileProperties).Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
             var results = _mapper.Map<IEnumerable<clientFileDTO>>(clientFilesData);
             return results;
 
@@ -62,36 +62,27 @@ namespace Louver.Controllers
 
             return result;
         }
-
+       
         // PUT: api/ClientFiles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutClientFile(int id, ClientFile clientFile)
+        public async Task<IActionResult> PutClientFile(int id,[FromForm] updateClientFile clientFile)
         {
-            if (id != clientFile.ClientFileId)
+            if (id != clientFile.ClientFileID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(clientFile).State = EntityState.Modified;
+           var clientfile= await GetById(id);
+            if (clientfile == null)
+                return NotFound($" No clientfile was found with this ID : {id} ");
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ClientFileExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            clientfile.TarkeebDate=clientFile.TarkeebDate;
+            clientfile.Modifiedby=clientfile.Modifiedby;
+            _context.Update(clientfile);
+            _context.SaveChanges();
 
-            return NoContent();
+            return Ok(clientFile);
         }
 
         // POST: api/ClientFiles
@@ -146,6 +137,10 @@ namespace Louver.Controllers
         private bool ClientFileExists(int id)
         {
             return (_context.ClientFiles?.Any(e => e.ClientFileId == id)).GetValueOrDefault();
+        }
+        private Task<ClientFile> GetById(int id)
+        {
+            return _context.ClientFiles.Include(c => c.Client).Include(c => c.ClientFileProperties).FirstOrDefaultAsync(m => m.ClientFileId == id);
         }
     }
 }
