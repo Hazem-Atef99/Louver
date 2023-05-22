@@ -22,13 +22,13 @@ namespace Louver.Controllers
 
         // GET: api/AnClientFileDetails
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AnClientFileDetail>>> GetAnClientFileDetails()
+        public async Task<ActionResult<IEnumerable<AnClientFileDetail>>> GetAnClientFileDetails([FromQuery] QueryPrameters queryPrameters)
         {
           if (_context.AnClientFileDetails == null)
           {
               return NotFound();
           }
-            return await _context.AnClientFileDetails.ToListAsync();
+            return await _context.AnClientFileDetails.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
         }
 
         // GET: api/AnClientFileDetails/5
