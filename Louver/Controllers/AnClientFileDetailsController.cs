@@ -28,7 +28,9 @@ namespace Louver.Controllers
           {
               return NotFound();
           }
-            return await _context.AnClientFileDetails.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
+            var results = await _context.AnClientFileDetails.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
+            int resultscount=results.Count();
+            return Ok(new { data=results, count=resultscount });
         }
 
         // GET: api/AnClientFileDetails/5
