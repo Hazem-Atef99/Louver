@@ -22,13 +22,13 @@ namespace Louver.Controllers
 
         // GET: api/AnCuttingListDetails
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AnCuttingListDetail>>> GetAnCuttingListDetails([FromQuery] QueryPrameters queryPrameters,int typeId)
+        public async Task<ActionResult<IEnumerable<AnCuttingListDetail>>> GetAnCuttingListDetails([FromQuery] QueryPrameters queryPrameters,int typeId, int ClientFileId)
         {
           if (_context.AnCuttingListDetails == null)
           {
               return NotFound();
           }
-          var results= await _context.AnCuttingListDetails.Where(c => c.TypeId == typeId).Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
+          var results= await _context.AnCuttingListDetails.Where(c => c.TypeId == typeId && c.ClientFileId== ClientFileId).Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
             int resultsCount= results.Count();
             return Ok(new {data=results,count = resultsCount});
         } 

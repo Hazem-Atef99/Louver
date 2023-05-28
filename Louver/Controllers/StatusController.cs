@@ -33,7 +33,12 @@ namespace Louver.Controllers
             {
                 return NotFound();
             }
-            var status = await _context.Statuses.Where(s=>s.StatusCategoryId==18).ToListAsync();
+            var status = await _context.Statuses.Where(s=>s.StatusCategoryId==18).Select(
+                cF => new {
+                    statusId = cF.StatusId,
+                    name = cF.Description + cF.DefaultDesc
+                }
+                ).ToListAsync();
             
 
             if (status == null)
@@ -50,7 +55,12 @@ namespace Louver.Controllers
             {
                 return NotFound();
             }
-            var status = await _context.Statuses.Where(s => s.StatusCategoryId == 97).ToListAsync();
+            var status = await _context.Statuses.Where(s => s.StatusCategoryId == 97).Select(
+                cF => new {
+                    statusId = cF.StatusId,
+                    name = cF.Description + cF.DefaultDesc
+                }
+                ).ToListAsync();
 
 
             if (status == null)
@@ -67,7 +77,12 @@ namespace Louver.Controllers
             {
                 return NotFound();
             }
-            var status = await _context.Statuses.Where(s => s.StatusCategoryId == 89).ToListAsync();
+            var status = await _context.Statuses.Where(s => s.StatusCategoryId == 89).Select(
+                cF => new {
+                    statusId = cF.StatusId,
+                    name = cF.Description + cF.DefaultDesc
+                }
+                ).ToListAsync();
 
 
             if (status == null)
@@ -76,6 +91,28 @@ namespace Louver.Controllers
             }
 
             return Ok(status);
+        }
+        [HttpGet("Unit")]
+        public async Task<ActionResult<Status>> GetUnit()
+        {
+            if (_context.Statuses == null)
+            {
+                return NotFound();
+            }
+            var units = await _context.Statuses.Where(u=>u.StatusCategoryId==2).Select(
+                cF => new {
+                    statusId=cF.StatusId,
+                    name=cF.Description+cF.DefaultDesc
+                }
+                ).ToListAsync();
+           
+
+            if (units == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(units);
         }
 
     }
