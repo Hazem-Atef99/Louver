@@ -36,11 +36,15 @@ namespace Louver.Controllers
 
         // GET: api/ClientFiles
         [HttpGet]
-        public async Task<IActionResult> GetClientFiles([FromQuery]QueryPrameters queryPrameters)
+        public async Task<IActionResult> GetClientFiles([FromQuery]QueryPrameters queryPrameters, [FromQuery] search search)
         {
            
              var clientFilesData= await _context.ClientFiles.Where(c=>c.StatusId==4).Include(c=>c.Client).Include(c=>c.ClientFileProperties).Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
             var results = _mapper.Map<IEnumerable<clientFileDTO>>(clientFilesData);
+            if (!string.IsNullOrEmpty(search.name))
+            {
+                results = results.Where(R => R.ClientClientName.ToLower().Contains(search.name.ToLower()));
+            }
             int resultsCount=results.Count();
             return Ok(new {data=results,count=resultsCount});
 
@@ -56,6 +60,7 @@ namespace Louver.Controllers
           } 
             var clientFileData = await _context.ClientFiles.Include(c => c.Client).Include(c => c.ClientFileProperties).FirstOrDefaultAsync(c => c.ClientFileId == id);
             var result =_mapper.Map<clientFileDTO>(clientFileData);
+         
             if (clientFileData == null)
             {
                 return NotFound();

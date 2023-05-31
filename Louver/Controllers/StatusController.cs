@@ -27,7 +27,7 @@ namespace Louver.Controllers
 
         // GET: api/Status/5
         [HttpGet("MaterialID")]
-        public async Task<ActionResult<Status>> GetMaterialID()
+        public async Task<ActionResult<Status>> GetMaterialID([FromQuery] search search)
         {
             if (_context.Statuses == null)
             {
@@ -39,7 +39,10 @@ namespace Louver.Controllers
                     name = cF.Description + cF.DefaultDesc
                 }
                 ).ToListAsync();
-            
+            //if (!string.IsNullOrEmpty(search.name))
+            //{
+            //    status = status.Where(s => s.name.ToLower().Contains(search.name.ToLower())).ToList();
+            //}
 
             if (status == null)
             {
