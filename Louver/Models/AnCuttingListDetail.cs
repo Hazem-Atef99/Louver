@@ -30,4 +30,6 @@ public partial class AnCuttingListDetail
     public int? ModifiedBy { get; set; }
 
     public DateTime? ModificationDate { get; set; }
+
+    public int CuttingListDetailId { get; set; }
 }

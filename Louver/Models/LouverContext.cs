@@ -127,7 +127,9 @@ public partial class LouverContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=tcp:193.203.15.167\\\\\\\\sqlexpress,5680;Initial Catalog=Louver;User ID=TestOnly;Password=TestOnly;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -204,16 +206,17 @@ public partial class LouverContext : DbContext
 
         modelBuilder.Entity<AnCuttingListDetail>(entity =>
         {
-            entity.HasKey(e => new { e.ClientFileId, e.DetailId });
+            entity.HasKey(e => e.CuttingListDetailId);
 
             entity.ToTable("An_CuttingListDetail");
 
+            entity.Property(e => e.CuttingListDetailId).HasColumnName("CuttingListDetailID");
             entity.Property(e => e.ClientFileId).HasColumnName("ClientFileID");
-            entity.Property(e => e.DetailId).HasColumnName("DetailID");
             entity.Property(e => e.Color1)
                 .HasMaxLength(1000)
                 .IsUnicode(false);
             entity.Property(e => e.CreationDate).HasColumnType("datetime");
+            entity.Property(e => e.DetailId).HasColumnName("DetailID");
             entity.Property(e => e.MaterialId).HasColumnName("MaterialID");
             entity.Property(e => e.ModificationDate).HasColumnType("datetime");
             entity.Property(e => e.TypeId).HasColumnName("TypeID");

@@ -5,9 +5,6 @@ namespace Louver.Models;
 
 public partial class ClientFile
 {
- 
- 
-
     public int ClientFileId { get; set; }
 
     public int? FileNo { get; set; }
@@ -146,7 +143,7 @@ public partial class ClientFile
 
     public int? FinalStatusId { get; set; }
 
-    public  Client? Client { get; set; }
+    public virtual Client? Client { get; set; }
 
     public virtual ICollection<ClientFileDetail> ClientFileDetails { get; set; } = new List<ClientFileDetail>();
 

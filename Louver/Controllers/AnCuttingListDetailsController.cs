@@ -56,7 +56,7 @@ namespace Louver.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAnCuttingListDetail(int id, AnCuttingListDetail anCuttingListDetail)
         {
-            if (id != anCuttingListDetail.ClientFileId)
+            if (id != anCuttingListDetail.CuttingListDetailId)
             {
                 return BadRequest();
             }
@@ -98,7 +98,7 @@ namespace Louver.Controllers
             }
             catch (DbUpdateException)
             {
-                if (AnCuttingListDetailExists(anCuttingListDetail.ClientFileId))
+                if (AnCuttingListDetailExists(anCuttingListDetail.CuttingListDetailId))
                 {
                     return Conflict();
                 }
@@ -108,7 +108,7 @@ namespace Louver.Controllers
                 }
             }
 
-            return CreatedAtAction("GetAnCuttingListDetail", new { id = anCuttingListDetail.ClientFileId }, anCuttingListDetail);
+            return CreatedAtAction("GetAnCuttingListDetail", new { id = anCuttingListDetail.CuttingListDetailId }, anCuttingListDetail);
         }
 
         // DELETE: api/AnCuttingListDetails/5

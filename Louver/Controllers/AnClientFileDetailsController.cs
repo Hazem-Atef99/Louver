@@ -22,7 +22,7 @@ namespace Louver.Controllers
 
         // GET: api/AnClientFileDetails
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AnClientFileDetail>>> GetAnClientFileDetails([FromQuery] QueryPrameters queryPrameters,search search)
+        public async Task<ActionResult<IEnumerable<AnClientFileDetail>>> GetAnClientFileDetails([FromQuery] QueryPrameters queryPrameters,[FromQuery]search search)
         {
           if (_context.AnClientFileDetails == null)
           {
@@ -56,9 +56,9 @@ namespace Louver.Controllers
         // PUT: api/AnClientFileDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAnClientFileDetail(int id, AnClientFileDetail anClientFileDetail)
+        public async Task<IActionResult> PutAnClientFileDetail(int detaiId, int clientFileId, AnClientFileDetail anClientFileDetail)
         {
-            if (id != anClientFileDetail.DetailId)
+            if (detaiId != anClientFileDetail.DetailId&&clientFileId!=anClientFileDetail.ClientFileId)
             {
                 return BadRequest();
             }
@@ -71,7 +71,7 @@ namespace Louver.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AnClientFileDetailExists(id))
+                if (!AnClientFileDetailExists(detaiId, clientFileId))
                 {
                     return NotFound();
                 }
@@ -100,7 +100,7 @@ namespace Louver.Controllers
             }
             catch (DbUpdateException)
             {
-                if (AnClientFileDetailExists(anClientFileDetail.DetailId))
+                if (AnClientFileDetailExists(anClientFileDetail.DetailId,anClientFileDetail.ClientFileId))
                 {
                     return Conflict();
                 }
@@ -114,14 +114,14 @@ namespace Louver.Controllers
         }
 
         // DELETE: api/AnClientFileDetails/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAnClientFileDetail(int id)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAnClientFileDetail(int detaiId, int clientFileId)
         {
             if (_context.AnClientFileDetails == null)
             {
                 return NotFound();
             }
-            var anClientFileDetail = await _context.AnClientFileDetails.FindAsync(id);
+            var anClientFileDetail = await _context.AnClientFileDetails.FindAsync( detaiId,clientFileId);
             if (anClientFileDetail == null)
             {
                 return NotFound();
@@ -133,9 +133,9 @@ namespace Louver.Controllers
             return NoContent();
         }
 
-        private bool AnClientFileDetailExists(int id)
+        private bool AnClientFileDetailExists(int detaiId,int clientFileId)
         {
-            return (_context.AnClientFileDetails?.Any(e => e.DetailId == id)).GetValueOrDefault();
+            return (_context.AnClientFileDetails?.Any(e => e.DetailId == detaiId&&e.ClientFileId==clientFileId)).GetValueOrDefault();
         }
     }
 }
