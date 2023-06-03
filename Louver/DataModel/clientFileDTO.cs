@@ -9,6 +9,7 @@
         public string? ClientFilePropertyKitchenTypeDesc { get; set; }
         public DateTime? FileDate { get; set; }
         public DateTime? TarkeebDate { get; set; }
+        public int AnClientFileDetailDetailId { get; set; }
 
 
     }
