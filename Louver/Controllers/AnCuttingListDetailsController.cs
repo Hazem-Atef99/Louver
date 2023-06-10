@@ -68,8 +68,9 @@ namespace Louver.Controllers
             {
                 return BadRequest();
             }
+             var result =_mapper.Map<AnCuttingListDetail>(anCuttingListDetail);
 
-            _context.Entry(anCuttingListDetail).State = EntityState.Modified;
+            _context.Entry(result).State = EntityState.Modified;
 
             try
             {
