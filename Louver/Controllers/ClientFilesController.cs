@@ -38,14 +38,16 @@ namespace Louver.Controllers
         [HttpGet]
         public async Task<IActionResult> GetClientFiles([FromQuery]QueryPrameters queryPrameters, [FromQuery] search search)
         {
-           
-             var clientFilesData= await _context.ClientFiles.Where(c=>c.StatusId==4).Include(c => c.AnCuttingListDetails).Include(c=>c.Client).Include(c=>c.ClientFileProperties).Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
+
+
+            var clientFilesResult = await _context.ClientFiles.Where(c => c.StatusId == 4).Include(c => c.AnCuttingListDetails).Include(c => c.Client).Include(c => c.ClientFileProperties).ToListAsync();
+             var clientFilesData= clientFilesResult.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size);
             var results = _mapper.Map<IEnumerable<clientFileDTO>>(clientFilesData);
             if (!string.IsNullOrEmpty(search.name))
             {
                 results = results.Where(R => R.ClientClientName.ToLower().Contains(search.name.ToLower()));
             }
-            int resultsCount=results.Count();
+            int resultsCount=clientFilesResult.Count();
             return Ok(new {data=results,count=resultsCount});
 
         }

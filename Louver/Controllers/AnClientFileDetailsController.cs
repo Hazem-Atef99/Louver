@@ -32,9 +32,10 @@ namespace Louver.Controllers
           {
               return NotFound();
           }
-            var clientFilesDetails = await _context.AnClientFileDetails.Include(c=>c.ClientFile).Where(c=>c.ClientFile.ClientFileId==ClientFileId).Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
+          var clientfilesResults = await _context.AnClientFileDetails.Include(c => c.ClientFile).Where(c => c.ClientFile.ClientFileId == ClientFileId).ToListAsync();
+            var clientFilesDetails =clientfilesResults.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size);
             var results=_mapper.Map<IEnumerable<AnClientFileDetailDTO>>(clientFilesDetails);
-            int resultscount=results.Count();
+            int resultscount=clientfilesResults.Count();
             return Ok(new { data=results, count=resultscount });
 
         }
@@ -76,7 +77,7 @@ namespace Louver.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AnClientFileDetailExists(detaiId, clientFileId))
+                if (!AnClientFileDetailExists(detaiId))
                 {
                     return NotFound();
                 }
@@ -107,7 +108,7 @@ namespace Louver.Controllers
             }
             catch (DbUpdateException)
             {
-                if (AnClientFileDetailExists(anClientFileDetail.DetailId,anClientFileDetail.ClientFileId))
+                if (AnClientFileDetailExists(anClientFileDetail.DetailId))
                 {
                     return Conflict();
                 }
@@ -140,9 +141,9 @@ namespace Louver.Controllers
             return NoContent();
         }
 
-        private bool AnClientFileDetailExists(int detaiId,int clientFileId)
+        private bool AnClientFileDetailExists(int detaiId)
         {
-            return (_context.AnClientFileDetails?.Any(e => e.DetailId == detaiId&&e.ClientFileId==clientFileId)).GetValueOrDefault();
+            return (_context.AnClientFileDetails?.Any(e => e.DetailId == detaiId)).GetValueOrDefault();
         }
     }
 }

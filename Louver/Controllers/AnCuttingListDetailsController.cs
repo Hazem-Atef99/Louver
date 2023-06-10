@@ -34,9 +34,10 @@ namespace Louver.Controllers
           {
               return NotFound();
           }
-          var anCuttingLists= await _context.AnCuttingListDetails.Include(c=>c.ClientFile).Where(c =>  c.ClientFile.ClientFileId== ClientFileId).Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
+          var cuttingResult= await _context.AnCuttingListDetails.Include(c => c.ClientFile).Where(c => c.ClientFile.ClientFileId == ClientFileId).ToListAsync();
+            var anCuttingLists = cuttingResult.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size);
             var results = _mapper.Map<IEnumerable<AnCuttingListDetailDTO>>(anCuttingLists);
-            int resultsCount= results.Count();
+            int resultsCount= cuttingResult.Count();
             return Ok(new {data=results,count = resultsCount});
         } 
 
