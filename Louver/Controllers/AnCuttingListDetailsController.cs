@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Louver.Models;
+using AutoMapper;
+using Louver.DataModel;
 
 namespace Louver.Controllers
 {
@@ -14,47 +16,53 @@ namespace Louver.Controllers
     public class AnCuttingListDetailsController : ControllerBase
     {
         private readonly LouverContext _context;
+        private readonly IMapper _mapper;
 
-        public AnCuttingListDetailsController(LouverContext context)
+
+
+        public AnCuttingListDetailsController(LouverContext context , IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/AnCuttingListDetails
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AnCuttingListDetail>>> GetAnCuttingListDetails([FromQuery] QueryPrameters queryPrameters,int typeId, int ClientFileId)
+        public async Task<ActionResult<IEnumerable<AnCuttingListDetailDTO>>> GetAnCuttingListDetails([FromQuery] QueryPrameters queryPrameters, int ClientFileId)
         {
           if (_context.AnCuttingListDetails == null)
           {
               return NotFound();
           }
-          var results= await _context.AnCuttingListDetails.Where(c => c.TypeId == typeId && c.ClientFileId== ClientFileId).Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
+          var anCuttingLists= await _context.AnCuttingListDetails.Include(c=>c.ClientFile).Where(c =>  c.ClientFile.ClientFileId== ClientFileId).Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
+            var results = _mapper.Map<IEnumerable<AnCuttingListDetailDTO>>(anCuttingLists);
             int resultsCount= results.Count();
             return Ok(new {data=results,count = resultsCount});
         } 
 
         // GET: api/AnCuttingListDetails/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<AnCuttingListDetail>> GetAnCuttingListDetail(int id)
+        public async Task<ActionResult<AnCuttingListDetailDTO>> GetAnCuttingListDetail(int id)
         {
           if (_context.AnCuttingListDetails == null)
           {
               return NotFound();
           }
-            var anCuttingListDetail = await _context.AnCuttingListDetails.FindAsync(id);
+            var anCuttingListDetail = await _context.AnCuttingListDetails.Include(c=>c.ClientFile).FirstOrDefaultAsync(c=>c.CuttingListDetailId==id);
+            var result=_mapper.Map<AnCuttingListDetailDTO>(anCuttingListDetail);
 
             if (anCuttingListDetail == null)
             {
                 return NotFound();
             }
 
-            return anCuttingListDetail;
+            return result;
         }
 
         // PUT: api/AnCuttingListDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAnCuttingListDetail(int id, AnCuttingListDetail anCuttingListDetail)
+        public async Task<IActionResult> PutAnCuttingListDetail(int id, AnCuttingListDetailDTO anCuttingListDetail)
         {
             if (id != anCuttingListDetail.CuttingListDetailId)
             {
@@ -85,13 +93,15 @@ namespace Louver.Controllers
         // POST: api/AnCuttingListDetails
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<AnCuttingListDetail>> PostAnCuttingListDetail(AnCuttingListDetail anCuttingListDetail)
+        public async Task<ActionResult<AnCuttingListDetailDTO>> PostAnCuttingListDetail(AnCuttingListDetailDTO anCuttingListDetail)
         {
           if (_context.AnCuttingListDetails == null)
           {
               return Problem("Entity set 'LouverContext.AnCuttingListDetails'  is null.");
+
           }
-            _context.AnCuttingListDetails.Add(anCuttingListDetail);
+          var anCuttingListDetails = _mapper.Map<AnCuttingListDetail>(anCuttingListDetail);
+            _context.AnCuttingListDetails.Add(anCuttingListDetails);
             try
             {
                 await _context.SaveChangesAsync();

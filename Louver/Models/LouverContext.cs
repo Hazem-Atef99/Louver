@@ -129,7 +129,7 @@ public partial class LouverContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=tcp:193.203.15.167\\\\\\\\sqlexpress,5680;Initial Catalog=Louver;User ID=TestOnly;Password=TestOnly;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Data Source=tcp:193.203.15.167\\\\\\\\sqlexpress,5680;Initial Catalog=Louver;User ID=TestOnly;Password=TestOnly;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -185,6 +185,11 @@ public partial class LouverContext : DbContext
                 .HasColumnName("QTY");
             entity.Property(e => e.UnitId).HasColumnName("UnitID");
             entity.Property(e => e.Width).HasColumnType("decimal(18, 3)");
+
+            entity.HasOne(d => d.ClientFile).WithMany(p => p.AnClientFileDetails)
+                .HasForeignKey(d => d.ClientFileId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_AN_ClientFileDetail_ClientFile");
         });
 
         modelBuilder.Entity<AnCuttingListCatgeory>(entity =>
@@ -220,6 +225,11 @@ public partial class LouverContext : DbContext
             entity.Property(e => e.MaterialId).HasColumnName("MaterialID");
             entity.Property(e => e.ModificationDate).HasColumnType("datetime");
             entity.Property(e => e.TypeId).HasColumnName("TypeID");
+
+            entity.HasOne(d => d.ClientFile).WithMany(p => p.AnCuttingListDetails)
+                .HasForeignKey(d => d.ClientFileId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_An_CuttingListDetail_ClientFile");
         });
 
         modelBuilder.Entity<AnHandType>(entity =>

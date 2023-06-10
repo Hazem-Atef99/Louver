@@ -39,7 +39,7 @@ namespace Louver.Controllers
         public async Task<IActionResult> GetClientFiles([FromQuery]QueryPrameters queryPrameters, [FromQuery] search search)
         {
            
-             var clientFilesData= await _context.ClientFiles.Where(c=>c.StatusId==4).Include(c=>c.Client).Include(c=>c.ClientFileProperties).Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
+             var clientFilesData= await _context.ClientFiles.Where(c=>c.StatusId==4).Include(c => c.AnCuttingListDetails).Include(c=>c.Client).Include(c=>c.ClientFileProperties).Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
             var results = _mapper.Map<IEnumerable<clientFileDTO>>(clientFilesData);
             if (!string.IsNullOrEmpty(search.name))
             {

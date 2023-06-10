@@ -42,4 +42,7 @@ public partial class AnClientFileDetail
     public int? FinalStatusId { get; set; }
 
     public int? GrainId { get; set; }
+
+
+    public virtual ClientFile ClientFile { get; set; } = null!;
 }

@@ -32,4 +32,7 @@ public partial class AnCuttingListDetail
     public DateTime? ModificationDate { get; set; }
 
     public int CuttingListDetailId { get; set; }
+
+
+    public virtual ClientFile ClientFile { get; set; } = null!;
 }

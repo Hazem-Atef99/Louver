@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Louver.Models;
+using Louver.DataModel;
+using AutoMapper;
 
 namespace Louver.Controllers
 {
@@ -14,22 +16,24 @@ namespace Louver.Controllers
     public class AnClientFileDetailsController : ControllerBase
     {
         private readonly LouverContext _context;
+        private readonly IMapper _mapper;
 
-        public AnClientFileDetailsController(LouverContext context)
+        public AnClientFileDetailsController(LouverContext context, IMapper mapper=null)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/AnClientFileDetails
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AnClientFileDetail>>> GetAnClientFileDetails([FromQuery] QueryPrameters queryPrameters,[FromQuery]search search)
+        public async Task<ActionResult<IEnumerable<AnClientFileDetailDTO>>> GetAnClientFileDetails([FromQuery] QueryPrameters queryPrameters,[FromQuery]search search, int ClientFileId)
         {
           if (_context.AnClientFileDetails == null)
           {
               return NotFound();
           }
-            var results = await _context.AnClientFileDetails.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
-            
+            var clientFilesDetails = await _context.AnClientFileDetails.Include(c=>c.ClientFile).Where(c=>c.ClientFile.ClientFileId==ClientFileId).Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size).ToListAsync();
+            var results=_mapper.Map<IEnumerable<AnClientFileDetailDTO>>(clientFilesDetails);
             int resultscount=results.Count();
             return Ok(new { data=results, count=resultscount });
 
@@ -37,26 +41,27 @@ namespace Louver.Controllers
 
         // GET: api/AnClientFileDetails/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<AnClientFileDetail>> GetAnClientFileDetail(int id)
+        public async Task<ActionResult<AnClientFileDetailDTO>> GetAnClientFileDetail(int id)
         {
           if (_context.AnClientFileDetails == null)
           {
               return NotFound();
           }
             var anClientFileDetail = await _context.AnClientFileDetails.FindAsync(id);
+            var result = _mapper.Map<AnClientFileDetailDTO>(anClientFileDetail);
 
             if (anClientFileDetail == null)
             {
                 return NotFound();
             }
 
-            return anClientFileDetail;
+            return result;
         }
 
         // PUT: api/AnClientFileDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAnClientFileDetail(int detaiId, int clientFileId, AnClientFileDetail anClientFileDetail)
+        public async Task<IActionResult> PutAnClientFileDetail(int detaiId, int clientFileId, AnClientFileDetailDTO anClientFileDetail)
         {
             if (detaiId != anClientFileDetail.DetailId&&clientFileId!=anClientFileDetail.ClientFileId)
             {
@@ -87,13 +92,15 @@ namespace Louver.Controllers
         // POST: api/AnClientFileDetails
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<AnClientFileDetail>> PostAnClientFileDetail(AnClientFileDetail anClientFileDetail)
+        public async Task<IActionResult> PostAnClientFileDetail(AnClientFileDetailDTO anClientFileDetail)
         {
           if (_context.AnClientFileDetails == null)
           {
               return Problem("Entity set 'LouverContext.AnClientFileDetails'  is null.");
+
           }
-            _context.AnClientFileDetails.Add(anClientFileDetail);
+          var clientfileAdd=_mapper.Map<AnClientFileDetail>(anClientFileDetail);
+            await _context.AnClientFileDetails.AddAsync(clientfileAdd);
             try
             {
                 await _context.SaveChangesAsync();
@@ -110,7 +117,7 @@ namespace Louver.Controllers
                 }
             }
 
-            return CreatedAtAction("GetAnClientFileDetail", new { id = anClientFileDetail.DetailId }, anClientFileDetail);
+            return Ok(clientfileAdd);
         }
 
         // DELETE: api/AnClientFileDetails/5
