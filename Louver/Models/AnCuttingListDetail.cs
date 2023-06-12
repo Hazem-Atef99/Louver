@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Louver.Models;
 
@@ -30,7 +31,7 @@ public partial class AnCuttingListDetail
     public int? ModifiedBy { get; set; }
 
     public DateTime? ModificationDate { get; set; }
-
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int CuttingListDetailId { get; set; }
 
 

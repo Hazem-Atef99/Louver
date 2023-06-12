@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Louver.Models;
 
@@ -8,7 +9,6 @@ public partial class AnClientFileDetail
     public int? UnitId { get; set; }
 
     public int DetailId { get; set; }
-
     public int? CuttingListCategoryId { get; set; }
 
     public int? Typeid { get; set; }

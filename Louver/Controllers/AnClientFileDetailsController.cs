@@ -26,13 +26,13 @@ namespace Louver.Controllers
 
         // GET: api/AnClientFileDetails
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AnClientFileDetailDTO>>> GetAnClientFileDetails([FromQuery] QueryPrameters queryPrameters,[FromQuery]search search, int ClientFileId)
+        public async Task<ActionResult<IEnumerable<AnClientFileDetailDTO>>> GetAnClientFileDetails([FromQuery] QueryPrameters queryPrameters,[FromQuery]search search, int ClientFileId,int typeId)
         {
           if (_context.AnClientFileDetails == null)
           {
               return NotFound();
           }
-          var clientfilesResults = await _context.AnClientFileDetails.Include(c => c.ClientFile).Where(c => c.ClientFile.ClientFileId == ClientFileId).ToListAsync();
+          var clientfilesResults = await _context.AnClientFileDetails.Include(c => c.ClientFile).Where(c => c.ClientFile.ClientFileId == ClientFileId && c.Typeid==typeId).ToListAsync();
             var clientFilesDetails =clientfilesResults.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size);
             var results=_mapper.Map<IEnumerable<AnClientFileDetailDTO>>(clientFilesDetails);
             int resultscount=clientfilesResults.Count();
