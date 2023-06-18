@@ -64,10 +64,10 @@ namespace Louver.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAnClientFileDetail(int detaiId, int clientFileId, AnClientFileDetailDTO anClientFileDetail)
         {
-            if (detaiId != anClientFileDetail.DetailId&&clientFileId!=anClientFileDetail.ClientFileId)
-            {
-                return BadRequest();
-            }
+            //if (detaiId != anClientFileDetail.DetailId&&clientFileId!=anClientFileDetail.ClientFileId)
+            //{
+            //    return BadRequest();
+            //}
 
             _context.Entry(anClientFileDetail).State = EntityState.Modified;
 
@@ -108,14 +108,14 @@ namespace Louver.Controllers
             }
             catch (DbUpdateException)
             {
-                if (AnClientFileDetailExists(anClientFileDetail.DetailId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                //if (AnClientFileDetailExists(anClientFileDetail.DetailId))
+                //{
+                //    return Conflict();
+                //}
+                //else
+                //{
+                //    throw;
+                //}
             }
 
             return Ok(clientfileAdd);
@@ -123,13 +123,13 @@ namespace Louver.Controllers
 
         // DELETE: api/AnClientFileDetails/5
         [HttpDelete]
-        public async Task<IActionResult> DeleteAnClientFileDetail(int detaiId, int clientFileId)
+        public async Task<IActionResult> DeleteAnClientFileDetail(int detaiId)
         {
             if (_context.AnClientFileDetails == null)
             {
                 return NotFound();
             }
-            var anClientFileDetail = await _context.AnClientFileDetails.FindAsync( detaiId,clientFileId);
+            var anClientFileDetail = await _context.AnClientFileDetails.FindAsync( detaiId);
             if (anClientFileDetail == null)
             {
                 return NotFound();

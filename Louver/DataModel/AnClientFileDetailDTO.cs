@@ -4,7 +4,6 @@
     {
         public int? UnitId { get; set; }
 
-        public int DetailId { get; set; }
 
         public int? CuttingListCategoryId { get; set; }
 
