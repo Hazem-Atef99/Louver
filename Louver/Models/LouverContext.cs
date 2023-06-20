@@ -141,9 +141,7 @@ public partial class LouverContext : DbContext
 
             entity.ToTable("AN_Category");
 
-            entity.Property(e => e.CategoryId)
-                .ValueGeneratedNever()
-                .HasColumnName("CategoryID");
+            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.DefaultDescAr)
                 .HasMaxLength(100)
                 .IsUnicode(false);
@@ -159,13 +157,13 @@ public partial class LouverContext : DbContext
 
         modelBuilder.Entity<AnClientFileDetail>(entity =>
         {
-            entity.HasKey(e => new { e.DetailId, e.ClientFileId });
+            entity.HasKey(e => e.DetailId).HasName("PK_AN_ClientFileDetail_1");
 
             entity.ToTable("AN_ClientFileDetail");
 
             entity.Property(e => e.DetailId).HasColumnName("DetailID");
-            entity.Property(e => e.ClientFileId).HasColumnName("ClientFileID");
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.ClientFileId).HasColumnName("ClientFileID");
             entity.Property(e => e.Color)
                 .HasMaxLength(100)
                 .IsUnicode(false);

@@ -6,6 +6,8 @@
 
 
         public int? CuttingListCategoryId { get; set; }
+        public int DetailId { get; set; }
+
 
         public int? Typeid { get; set; }
 

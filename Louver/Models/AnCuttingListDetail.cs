@@ -33,6 +33,5 @@ public partial class AnCuttingListDetail
 
     public int CuttingListDetailId { get; set; }
 
-
     public virtual ClientFile ClientFile { get; set; } = null!;
 }
