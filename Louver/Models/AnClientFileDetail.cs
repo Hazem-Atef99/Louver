@@ -5,25 +5,21 @@ namespace Louver.Models;
 
 public partial class AnClientFileDetail
 {
-    public int? UnitId { get; set; }
+    public int? ClientFileitemId { get; set; }
 
     public int DetailId { get; set; }
 
-    public int? CuttingListCategoryId { get; set; }
+    public int? TypeId { get; set; }
 
-    public int? Typeid { get; set; }
+    public int? CatgeoryId { get; set; }
 
     public decimal? Width { get; set; }
 
-    public decimal? Height { get; set; }
+    public decimal? Hieght { get; set; }
 
     public decimal? Length { get; set; }
 
-    public int? CategoryId { get; set; }
-
-    public string? Notes { get; set; }
-
-    public int ClientFileId { get; set; }
+    public decimal? Qty { get; set; }
 
     public int? CreatedBy { get; set; }
 
@@ -33,15 +29,9 @@ public partial class AnClientFileDetail
 
     public DateTime? ModificationDate { get; set; }
 
-    public int? MaterialId { get; set; }
+    public virtual AnCategory? Catgeory { get; set; }
 
-    public string? Color { get; set; }
+    public virtual AnClientFileItem? ClientFileitem { get; set; }
 
-    public decimal? Qty { get; set; }
-
-    public int? FinalStatusId { get; set; }
-
-    public int? GrainId { get; set; }
-
-    public virtual ClientFile ClientFile { get; set; } = null!;
+    public virtual AnCuttingListCatgeory? Type { get; set; }
 }

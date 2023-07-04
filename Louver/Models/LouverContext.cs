@@ -19,6 +19,8 @@ public partial class LouverContext : DbContext
 
     public virtual DbSet<AnClientFileDetail> AnClientFileDetails { get; set; }
 
+    public virtual DbSet<AnClientFileItem> AnClientFileItems { get; set; }
+
     public virtual DbSet<AnCuttingListCatgeory> AnCuttingListCatgeories { get; set; }
 
     public virtual DbSet<AnCuttingListDetail> AnCuttingListDetails { get; set; }
@@ -157,37 +159,76 @@ public partial class LouverContext : DbContext
 
         modelBuilder.Entity<AnClientFileDetail>(entity =>
         {
-            entity.HasKey(e => e.DetailId).HasName("PK_AN_ClientFileDetail_1");
+            entity.HasKey(e => e.DetailId).HasName("PK__AN_Clien__135C314DA845EAC6");
 
             entity.ToTable("AN_ClientFileDetail");
 
             entity.Property(e => e.DetailId).HasColumnName("DetailID");
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
-            entity.Property(e => e.ClientFileId).HasColumnName("ClientFileID");
+            entity.Property(e => e.CatgeoryId).HasColumnName("CatgeoryID");
+            entity.Property(e => e.ClientFileitemId).HasColumnName("ClientFIleitemID");
+            entity.Property(e => e.CreationDate).HasColumnType("datetime");
+            entity.Property(e => e.Hieght).HasColumnType("decimal(18, 3)");
+            entity.Property(e => e.Length).HasColumnType("decimal(18, 3)");
+            entity.Property(e => e.ModificationDate).HasColumnType("datetime");
+            entity.Property(e => e.Qty)
+                .HasColumnType("decimal(18, 3)")
+                .HasColumnName("QTY");
+            entity.Property(e => e.TypeId).HasColumnName("TypeID");
+            entity.Property(e => e.Width).HasColumnType("decimal(18, 3)");
+
+            entity.HasOne(d => d.Catgeory).WithMany(p => p.AnClientFileDetails)
+                .HasForeignKey(d => d.CatgeoryId)
+                .HasConstraintName("FK_AN_ClientFileDetail_FK6");
+
+            entity.HasOne(d => d.ClientFileitem).WithMany(p => p.AnClientFileDetails)
+                .HasForeignKey(d => d.ClientFileitemId)
+                .HasConstraintName("FK_AN_ClientFileDetail_AN_ClientFileItem");
+
+            entity.HasOne(d => d.Type).WithMany(p => p.AnClientFileDetails)
+                .HasForeignKey(d => d.TypeId)
+                .HasConstraintName("FK_AN_ClientFileDetail_FK5");
+        });
+
+        modelBuilder.Entity<AnClientFileItem>(entity =>
+        {
+            entity.HasKey(e => e.ClientFileitemId).HasName("PK__AN_Clien__92F51EADAFFAAC1C");
+
+            entity.ToTable("AN_ClientFileItem");
+
+            entity.Property(e => e.ClientFileitemId).HasColumnName("ClientFIleitemID");
+            entity.Property(e => e.ClientFileiD).HasColumnName("ClientFIleiD");
             entity.Property(e => e.Color)
-                .HasMaxLength(100)
+                .HasMaxLength(200)
                 .IsUnicode(false);
             entity.Property(e => e.CreationDate).HasColumnType("datetime");
             entity.Property(e => e.CuttingListCategoryId).HasColumnName("CuttingListCategoryID");
             entity.Property(e => e.FinalStatusId).HasColumnName("FinalStatusID");
-            entity.Property(e => e.GrainId).HasColumnName("GrainID");
-            entity.Property(e => e.Height).HasColumnType("decimal(18, 3)");
-            entity.Property(e => e.Length).HasColumnType("decimal(18, 3)");
             entity.Property(e => e.MaterialId).HasColumnName("MaterialID");
             entity.Property(e => e.ModificationDate).HasColumnType("datetime");
             entity.Property(e => e.Notes)
                 .HasMaxLength(1000)
                 .IsUnicode(false);
-            entity.Property(e => e.Qty)
-                .HasColumnType("decimal(18, 3)")
-                .HasColumnName("QTY");
             entity.Property(e => e.UnitId).HasColumnName("UnitID");
-            entity.Property(e => e.Width).HasColumnType("decimal(18, 3)");
 
-            entity.HasOne(d => d.ClientFile).WithMany(p => p.AnClientFileDetails)
-                .HasForeignKey(d => d.ClientFileId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+            entity.HasOne(d => d.ClientFile).WithMany(p => p.AnClientFileItems)
+                .HasForeignKey(d => d.ClientFileiD)
                 .HasConstraintName("FK_AN_ClientFileDetail_ClientFile");
+
+            entity.HasOne(d => d.CuttingListCategory).WithMany(p => p.AnClientFileItems)
+                .HasForeignKey(d => d.CuttingListCategoryId)
+                .HasConstraintName("FK_AN_ClientFileDetail_FK1");
+
+            entity.HasOne(d => d.GrainNavigation).WithMany(p => p.AnClientFileItemGrainNavigations)
+                .HasForeignKey(d => d.Grain)
+                .HasConstraintName("FK_AN_ClientFileDetail_FK4");
+
+            entity.HasOne(d => d.Material).WithMany(p => p.AnClientFileItemMaterials)
+                .HasForeignKey(d => d.MaterialId)
+                .HasConstraintName("FK_AN_ClientFileDetail_FK3");
+
+            entity.HasOne(d => d.Unit).WithMany(p => p.AnClientFileItemUnits)
+                .HasForeignKey(d => d.UnitId)
+                .HasConstraintName("FK_AN_ClientFileDetail_FK2");
         });
 
         modelBuilder.Entity<AnCuttingListCatgeory>(entity =>

@@ -20,4 +20,6 @@ public partial class AnCategory
     public int? HasHeight { get; set; }
 
     public int? HasCount { get; set; }
+
+    public virtual ICollection<AnClientFileDetail> AnClientFileDetails { get; set; } = new List<AnClientFileDetail>();
 }
