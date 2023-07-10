@@ -12,9 +12,11 @@ namespace Louver.Helpers
             CreateMap<updateClientFile, ClientFile>();
             CreateMap<AnClientFileDetail,AnClientFileDetailDTO>();
             CreateMap<AnClientFileDetailDTO, AnClientFileDetail>();
-
             CreateMap<AnCuttingListDetail, AnCuttingListDetailDTO>();
             CreateMap<AnCuttingListDetailDTO, AnCuttingListDetail>();
+            CreateMap<AnClientFileItemDTO, AnClientFileItem>();
+            CreateMap<AnClientFileItem, AnClientFileItemDTO>();
+            
 
         }
 

@@ -217,18 +217,6 @@ public partial class LouverContext : DbContext
             entity.HasOne(d => d.CuttingListCategory).WithMany(p => p.AnClientFileItems)
                 .HasForeignKey(d => d.CuttingListCategoryId)
                 .HasConstraintName("FK_AN_ClientFileDetail_FK1");
-
-            entity.HasOne(d => d.GrainNavigation).WithMany(p => p.AnClientFileItemGrainNavigations)
-                .HasForeignKey(d => d.Grain)
-                .HasConstraintName("FK_AN_ClientFileDetail_FK4");
-
-            entity.HasOne(d => d.Material).WithMany(p => p.AnClientFileItemMaterials)
-                .HasForeignKey(d => d.MaterialId)
-                .HasConstraintName("FK_AN_ClientFileDetail_FK3");
-
-            entity.HasOne(d => d.Unit).WithMany(p => p.AnClientFileItemUnits)
-                .HasForeignKey(d => d.UnitId)
-                .HasConstraintName("FK_AN_ClientFileDetail_FK2");
         });
 
         modelBuilder.Entity<AnCuttingListCatgeory>(entity =>

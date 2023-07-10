@@ -97,12 +97,6 @@ public partial class Status
 
     public int? IsGlass { get; set; }
 
-    public virtual ICollection<AnClientFileItem> AnClientFileItemGrainNavigations { get; set; } = new List<AnClientFileItem>();
-
-    public virtual ICollection<AnClientFileItem> AnClientFileItemMaterials { get; set; } = new List<AnClientFileItem>();
-
-    public virtual ICollection<AnClientFileItem> AnClientFileItemUnits { get; set; } = new List<AnClientFileItem>();
-
     public virtual ICollection<Status> InverseItemCategory { get; set; } = new List<Status>();
 
     public virtual Status? ItemCategory { get; set; }

@@ -1,11 +1,16 @@
 using Louver.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+}); ;
 builder.Services.AddDbContext<LouverContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("dbconn")));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
