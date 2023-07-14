@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Louver.Models;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 
 namespace Louver.Controllers
 {
@@ -28,8 +30,41 @@ namespace Louver.Controllers
           {
               return NotFound();
           }
-          var result= await _context.AnClientFileItems.Include(x => x.AnClientFileDetails).ToListAsync();
+           
+            var result= await _context.AnClientFileItems.Include(x => x.AnClientFileDetails).ToListAsync();
             var dataCount= result.Count();
+            for (int i = 0; i < dataCount; i++)
+            {
+                var unitId = result[i].UnitId;
+                var units = await _context.Statuses.Where(u => u.StatusCategoryId == 2 && u.StatusId == unitId).Select(
+                cF => new {
+                    statusId = cF.StatusId,
+                    name = cF.Description + cF.DefaultDesc
+                    
+                }
+                ).ToListAsync();
+               
+
+
+            }
+            
+            var status = await _context.Statuses.Where(s => s.StatusCategoryId == 89).Select(
+                cF => new {
+                    statusId = cF.StatusId,
+                    name = cF.Description + cF.DefaultDesc
+                }
+                ).ToListAsync();
+            var material = await _context.Statuses.Where(s => s.StatusCategoryId == 18).Select(
+                cF => new {
+                    statusId = cF.StatusId,
+                    name = cF.Description + cF.DefaultDesc
+                }
+                ).ToListAsync();
+            var ResultData = new
+            {
+                data=result,
+
+            };
 
             return Ok(new { data = result, count = dataCount, code = 200 });
         }
@@ -42,14 +77,14 @@ namespace Louver.Controllers
           {
               return NotFound();
           }
-            var anClientFileItem = await _context.AnClientFileItems.FindAsync(id);
+            var anClientFileItem = _context.AnClientFileItems.Include(A => A.AnClientFileDetails).FirstOrDefault(A=>A.ClientFileitemId==id);
 
             if (anClientFileItem == null)
             {
                 return NotFound();
             }
 
-            return anClientFileItem;
+            return Ok(new { data = anClientFileItem, count = 1, code = 200 });
         }
 
         // PUT: api/AnClientFileItems/5
