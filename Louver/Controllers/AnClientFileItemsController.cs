@@ -22,13 +22,13 @@ namespace Louver.Controllers
 
         // GET: api/AnClientFileItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AnClientFileItem>>> GetAnClientFileItems()
+        public async Task<ActionResult<IEnumerable<AnClientFileItem>>> GetAnClientFileItems(int typeId,int clientFileId)
         {
           if (_context.AnClientFileItems == null)
           {
               return NotFound();
           }
-          var result= await _context.AnClientFileItems.Include(x => x.AnClientFileDetails).ToListAsync();
+          var result= await _context.AnClientFileItems.Include(x => x.AnClientFileDetails).Where(x=>x.ClientFileiD==clientFileId&&x.CuttingListCategoryId==typeId).ToListAsync();
             var dataCount= result.Count();
 
             return Ok(new { data = result, count = dataCount, code = 200 });
