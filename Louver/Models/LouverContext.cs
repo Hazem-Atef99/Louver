@@ -178,7 +178,7 @@ public partial class LouverContext : DbContext
 
             entity.HasOne(d => d.Catgeory).WithMany(p => p.AnClientFileDetails)
                 .HasForeignKey(d => d.CatgeoryId)
-                .HasConstraintName("FK_AN_ClientFileDetail_FK6");
+                .HasConstraintName("FK_AN_ClientFileDetail_AN_Category");
 
             entity.HasOne(d => d.ClientFileitem).WithMany(p => p.AnClientFileDetails)
                 .HasForeignKey(d => d.ClientFileitemId)
@@ -217,6 +217,18 @@ public partial class LouverContext : DbContext
             entity.HasOne(d => d.CuttingListCategory).WithMany(p => p.AnClientFileItems)
                 .HasForeignKey(d => d.CuttingListCategoryId)
                 .HasConstraintName("FK_AN_ClientFileDetail_FK1");
+
+            entity.HasOne(d => d.GrainNavigation).WithMany(p => p.AnClientFileItemGrainNavigations)
+                .HasForeignKey(d => d.Grain)
+                .HasConstraintName("grain");
+
+            entity.HasOne(d => d.Material).WithMany(p => p.AnClientFileItemMaterials)
+                .HasForeignKey(d => d.MaterialId)
+                .HasConstraintName("material");
+
+            entity.HasOne(d => d.Unit).WithMany(p => p.AnClientFileItemUnits)
+                .HasForeignKey(d => d.UnitId)
+                .HasConstraintName("unit");
         });
 
         modelBuilder.Entity<AnCuttingListCatgeory>(entity =>
@@ -1621,10 +1633,6 @@ public partial class LouverContext : DbContext
             entity.Property(e => e.Price).HasColumnType("decimal(18, 5)");
             entity.Property(e => e.StatusCategoryId).HasColumnName("StatusCategoryID");
             entity.Property(e => e.SubCategoryId).HasColumnName("SubCategoryID");
-
-            entity.HasOne(d => d.ItemCategory).WithMany(p => p.InverseItemCategory)
-                .HasForeignKey(d => d.ItemCategoryId)
-                .HasConstraintName("FK_Status_Status");
 
             entity.HasOne(d => d.StatusCategory).WithMany(p => p.Statuses)
                 .HasForeignKey(d => d.StatusCategoryId)

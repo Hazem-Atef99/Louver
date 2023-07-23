@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Louver.Models;
+using NuGet.Protocol;
 
 namespace Louver.Controllers
 {
@@ -28,8 +29,11 @@ namespace Louver.Controllers
           {
               return NotFound();
           }
-          var result= await _context.AnClientFileItems.Include(x => x.AnClientFileDetails).Where(x=>x.ClientFileiD==clientFileId&&x.CuttingListCategoryId==typeId).ToListAsync();
+         
+            var result= await _context.AnClientFileItems.Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).Where(x=>x.ClientFileiD==clientFileId&&x.CuttingListCategoryId==typeId).Include(x => x.AnClientFileDetails).ToListAsync();
+    
             var dataCount= result.Count();
+            Console.WriteLine(result);
 
             return Ok(new { data = result, count = dataCount, code = 200 });
         }
@@ -42,8 +46,8 @@ namespace Louver.Controllers
           {
               return NotFound();
           }
-            var anClientFileItem = await _context.AnClientFileItems.FindAsync(id);
-
+            var anClientFileItem = await _context.AnClientFileItems.Include(x => x.AnClientFileDetails).ThenInclude(c => c.Catgeory).Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).FirstOrDefaultAsync(x=>x.ClientFileitemId==id);
+      
             if (anClientFileItem == null)
             {
                 return NotFound();
@@ -106,7 +110,7 @@ namespace Louver.Controllers
             {
                 return NotFound();
             }
-            var anClientFileItem = await _context.AnClientFileItems.FindAsync(id);
+            var anClientFileItem = await _context.AnClientFileItems.Include(x=>x.AnClientFileDetails).FirstAsync(x=>x.ClientFileitemId== id);
             if (anClientFileItem == null)
             {
                 return NotFound();
@@ -121,6 +125,15 @@ namespace Louver.Controllers
         private bool AnClientFileItemExists(int id)
         {
             return (_context.AnClientFileItems?.Any(e => e.ClientFileitemId == id)).GetValueOrDefault();
+        }
+        private  AnCategory GetAnCategory(int? id)
+        {
+         
+            var anCategory =  _context.AnCategories.FirstOrDefault(c=>c.CategoryId== id);
+
+          
+
+            return anCategory;
         }
     }
 }

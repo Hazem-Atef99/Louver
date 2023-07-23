@@ -36,4 +36,10 @@ public partial class AnClientFileItem
     public virtual ClientFile? ClientFile { get; set; }
 
     public virtual AnCuttingListCatgeory? CuttingListCategory { get; set; }
+
+    public virtual Status? GrainNavigation { get; set; }
+
+    public virtual Status? Material { get; set; }
+
+    public virtual Status? Unit { get; set; }
 }
