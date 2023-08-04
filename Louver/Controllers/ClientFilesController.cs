@@ -74,7 +74,7 @@ namespace Louver.Controllers
         // PUT: api/ClientFiles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutClientFile(int id,[FromForm] updateClientFile clientFile)
+        public async Task<IActionResult> PutClientFile(int id,[FromBody] updateClientFile clientFile)
         {
             if (id != clientFile.ClientFileID)
             {
