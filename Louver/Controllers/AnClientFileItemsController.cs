@@ -46,11 +46,12 @@ namespace Louver.Controllers
             var PclientFileId = new SqlParameter("@pClientFileID", System.Data.SqlDbType.Int);
             var PcreatedBy = new SqlParameter("@pCreatedBy", System.Data.SqlDbType.Int);
             PclientFileId.Value=clientFileId; PcreatedBy.Value=createdBy;
-            var Sqlstr = $"EXEC dboAN_SaveClientFileItem @pClientFileID={PclientFileId}, @pCreatedBy={PcreatedBy}";
-             _context.ClientFileItems.FromSql(Sqlstr);
-            await _context.SaveChangesAsync();
+            var Sqlstr = $"AN_SaveClientFileItem {clientFileId} ,{createdBy}";
+             _context.Database.ExecuteSqlRaw(Sqlstr);
+           // await _context.SaveChangesAsync();
             var result = await _context.AnClientFileItems.Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).Where(x => x.ClientFileiD ==  clientFileId).Include(x => x.AnClientFileDetails).ToListAsync();
-            return Ok(result);
+            var dataCount=result.Count();
+            return Ok(new { data = result, count = dataCount, code = 200 });
 
            
         }
