@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Louver.Models;
 using NuGet.Protocol;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.Data.SqlClient;
 
 namespace Louver.Controllers
 {
@@ -36,6 +38,21 @@ namespace Louver.Controllers
             Console.WriteLine(result);
 
             return Ok(new { data = result, count = dataCount, code = 200 });
+        }
+        [HttpPost("fillTable")]
+        public async Task<ActionResult> fillTableClientFileItem(int clientFileId, int createdBy)
+
+        {
+            var PclientFileId = new SqlParameter("@pClientFileID", System.Data.SqlDbType.Int);
+            var PcreatedBy = new SqlParameter("@pCreatedBy", System.Data.SqlDbType.Int);
+            PclientFileId.Value=clientFileId; PcreatedBy.Value=createdBy;
+            var Sqlstr = $"EXEC dboAN_SaveClientFileItem @pClientFileID={PclientFileId}, @pCreatedBy={PcreatedBy}";
+             _context.ClientFileItems.FromSql(Sqlstr);
+            await _context.SaveChangesAsync();
+            var result = await _context.AnClientFileItems.Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).Where(x => x.ClientFileiD ==  clientFileId).Include(x => x.AnClientFileDetails).ToListAsync();
+            return Ok(result);
+
+           
         }
 
         // GET: api/AnClientFileItems/5
@@ -120,6 +137,19 @@ namespace Louver.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+        [HttpDelete("reset")]
+        public async Task<ActionResult> ResetClientFileItems(int clientFileId)
+        {
+            var anClientFileItem = await _context.AnClientFileItems.FirstAsync(x => x.ClientFileiD == clientFileId);
+            if (anClientFileItem == null)
+            {
+                return NotFound();
+            }
+            var result = await _context.AnClientFileItems.Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).Where(x => x.ClientFileiD == clientFileId).Include(x => x.AnClientFileDetails).ToListAsync();
+            _context.AnClientFileItems.RemoveRange(result);
+            await _context.SaveChangesAsync();
+            return Ok("deleted");
         }
 
         private bool AnClientFileItemExists(int id)
