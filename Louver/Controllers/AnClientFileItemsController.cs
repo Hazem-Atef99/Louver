@@ -25,7 +25,7 @@ namespace Louver.Controllers
 
         // GET: api/AnClientFileItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AnClientFileItem>>> GetAnClientFileItems(int typeId,int clientFileId)
+        public async Task<ActionResult<IEnumerable<AnClientFileItem>>> GetAnClientFileItems(int typeId,int clientFileId, [FromQuery] QueryPrameters queryPrameters)
         {
           if (_context.AnClientFileItems == null)
           {
@@ -33,11 +33,11 @@ namespace Louver.Controllers
           }
          
             var result= await _context.AnClientFileItems.Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).Where(x=>x.ClientFileiD==clientFileId&&x.CuttingListCategoryId==typeId).Include(x => x.AnClientFileDetails).ToListAsync();
-    
+            var Data= result.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size);
             var dataCount= result.Count();
             Console.WriteLine(result);
 
-            return Ok(new { data = result, count = dataCount, code = 200 });
+            return Ok(new { data = Data, count = dataCount, code = 200 });
         }
         [HttpPost("fillTable")]
         public async Task<ActionResult> fillTableClientFileItem(int clientFileId, int createdBy)
@@ -49,9 +49,9 @@ namespace Louver.Controllers
             var Sqlstr = $"AN_SaveClientFileItem {clientFileId} ,{createdBy}";
              _context.Database.ExecuteSqlRaw(Sqlstr);
            // await _context.SaveChangesAsync();
-            var result = await _context.AnClientFileItems.Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).Where(x => x.ClientFileiD ==  clientFileId).Include(x => x.AnClientFileDetails).ToListAsync();
-            var dataCount=result.Count();
-            return Ok(new { data = result, count = dataCount, code = 200 });
+           // var result = await _context.AnClientFileItems.Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).Where(x => x.ClientFileiD ==  clientFileId).Include(x => x.AnClientFileDetails).ToListAsync();
+           // var dataCount=result.Count();
+            return Ok(new { message ="data filled successfully", code = 200 });
 
            
         }
