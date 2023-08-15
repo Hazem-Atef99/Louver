@@ -39,7 +39,23 @@ namespace Louver.Controllers
             var results = _mapper.Map<IEnumerable<AnCuttingListDetailDTO>>(anCuttingLists);
             int resultsCount= cuttingResult.Count();
             return Ok(new {data=results,count = resultsCount});
-        } 
+        }
+        [HttpGet("getColors")]
+        public async Task<ActionResult> getColorlist()
+        {
+            if (_context.AnCuttingListDetails == null)
+            {
+                return NotFound();
+            }
+            var cuttingResult = await _context.AnCuttingListDetails.ToListAsync();
+            List<string> colorsList=new List<string>();
+            for (int i = 0; i < cuttingResult.Count; i++)
+            {
+                colorsList.Add(cuttingResult[i].Color1);
+            }
+            return Ok(colorsList);
+        }
+
 
         // GET: api/AnCuttingListDetails/5
         [HttpGet("{id}")]
