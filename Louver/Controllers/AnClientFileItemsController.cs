@@ -43,6 +43,14 @@ namespace Louver.Controllers
         public async Task<ActionResult> fillTableClientFileItem(int clientFileId, int createdBy)
 
         {
+            if (createdBy<1)
+            {
+                return NotFound(new { message = "provide createdBy", Code=404 });
+            }
+            if (!ClientFileExists(clientFileId))
+            {
+                return NotFound(new { message="No ClientFile With This Id", code=404}) ;
+            }
             var PclientFileId = new SqlParameter("@pClientFileID", System.Data.SqlDbType.Int);
             var PcreatedBy = new SqlParameter("@pCreatedBy", System.Data.SqlDbType.Int);
             PclientFileId.Value=clientFileId; PcreatedBy.Value=createdBy;
@@ -166,5 +174,11 @@ namespace Louver.Controllers
 
             return anCategory;
         }
+
+        private bool ClientFileExists(int id)
+        {
+            return (_context.ClientFiles?.Any(e => e.ClientFileId == id)).GetValueOrDefault();
+        }
+       
     }
 }
