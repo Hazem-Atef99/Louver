@@ -28,26 +28,26 @@ namespace Louver.Controllers
 
         // GET: api/AnCuttingListDetails
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AnCuttingListDetailDTO>>> GetAnCuttingListDetails([FromQuery] QueryPrameters queryPrameters, int ClientFileId)
+        public async Task<ActionResult<IEnumerable<AnCuttingListDetailDTO>>> GetAnCuttingListDetails([FromQuery] QueryPrameters queryPrameters, int ClientFileId , int typeId)
         {
           if (_context.AnCuttingListDetails == null)
           {
               return NotFound();
           }
-          var cuttingResult= await _context.AnCuttingListDetails.Include(c => c.ClientFile).Where(c => c.ClientFile.ClientFileId == ClientFileId).ToListAsync();
+          var cuttingResult= await _context.AnCuttingListDetails.Include(c => c.ClientFile).Where(c => c.ClientFile.ClientFileId == ClientFileId && c.TypeId==typeId).ToListAsync();
             var anCuttingLists = cuttingResult.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size);
             var results = _mapper.Map<IEnumerable<AnCuttingListDetailDTO>>(anCuttingLists);
             int resultsCount= cuttingResult.Count();
             return Ok(new {data=results,count = resultsCount});
         }
         [HttpGet("getColors")]
-        public async Task<ActionResult> getColorlist()
+        public async Task<ActionResult> getColorlist(int clientFileId, int typeId)
         {
             if (_context.AnCuttingListDetails == null)
             {
                 return NotFound();
             }
-            var cuttingResult = await _context.AnCuttingListDetails.ToListAsync();
+            var cuttingResult = await _context.AnCuttingListDetails.Where(c=>c.ClientFileId==clientFileId&&c.TypeId==typeId).ToListAsync();
             List<string> colorsList=new List<string>();
             for (int i = 0; i < cuttingResult.Count; i++)
             {
@@ -105,7 +105,7 @@ namespace Louver.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(new {message="cuttingListDetail Updated Successfully", code=200});
         }
 
         // POST: api/AnCuttingListDetails
@@ -156,7 +156,7 @@ namespace Louver.Controllers
             _context.AnCuttingListDetails.Remove(anCuttingListDetail);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new { message = "cuttingListDetail Deleted Successfully", code = 200 });
         }
 
         private bool AnCuttingListDetailExists(int id)

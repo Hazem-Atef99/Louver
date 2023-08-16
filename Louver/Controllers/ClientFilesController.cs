@@ -6,16 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Louver.Models;
+using NuGet.Protocol;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.Data.SqlClient;
-using System.Configuration;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using System.Data;
-using System.Runtime.CompilerServices;
-using Microsoft.EntityFrameworkCore.Storage;
-using Louver.DataModel;
-using Louver.Helpers;
 using AutoMapper;
-using Microsoft.CodeAnalysis;
+using Louver.DataModel;
 
 namespace Louver.Controllers
 {
@@ -24,14 +19,16 @@ namespace Louver.Controllers
     public class ClientFilesController : ControllerBase   
     {
         private readonly LouverContext _context;
+        private readonly MasterContext masterContext;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public ClientFilesController(LouverContext context , IConfiguration configuration , IMapper mapper = null)
+        public ClientFilesController(LouverContext context,MasterContext context1 , IConfiguration configuration , IMapper mapper = null)
         {
             _context = context;
             _configuration = configuration;
             _mapper = mapper;
+            masterContext = context1;
         }
 
         // GET: api/ClientFiles
@@ -48,7 +45,7 @@ namespace Louver.Controllers
                 results = results.Where(R => R.ClientClientName.ToLower().Contains(search.name.ToLower()));
             }
             int resultsCount=clientFilesResult.Count();
-            return Ok(new {data=results,count=resultsCount});
+            return Ok(new {data=results,count=resultsCount, code=200});
 
         }
 
@@ -130,16 +127,17 @@ namespace Louver.Controllers
             {
                 return NotFound();
             }
-            var clientFile = await _context.ClientFiles.FindAsync(id);
+
+            var clientFile =  _context.ClientFiles.Include(c => c.AnCuttingListDetails).Include(c => c.Client).Include(c => c.ClientFileProperties).Include(c=>c.AnClientFileItems).FirstOrDefault(c=>c.ClientFileId==id);
             if (clientFile == null)
             {
                 return NotFound();
             }
-
-            _context.ClientFiles.Remove(clientFile);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            var PclientFileId = new SqlParameter("@pClientFileID", System.Data.SqlDbType.Int);
+            PclientFileId.Value = id;
+            var Sqlstr = $"DeleteClientFile {id}";
+            _context.Database.ExecuteSqlRaw(Sqlstr);
+            return Ok(new {message="clientFile Deleted Successfully" , code=200});
         }
 
         private bool ClientFileExists(int id)

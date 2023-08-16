@@ -465,6 +465,7 @@ public partial class LouverContext : DbContext
             entity.HasOne(d => d.Client).WithMany(p => p.ClientFiles)
                 .HasForeignKey(d => d.ClientId)
                 .HasConstraintName("FK_ClientFile_CLIENTS");
+            
         });
 
         modelBuilder.Entity<ClientFileAnalyse>(entity =>
