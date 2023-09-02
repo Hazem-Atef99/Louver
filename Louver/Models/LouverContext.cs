@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Core.Objects;
-using System.Data.Entity.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace Louver.Models;
@@ -131,10 +129,9 @@ public partial class LouverContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=tcp:194.163.132.242\\SQLEXPRESS,56773;Initial Catalog=Louver;User ID=kitchen1;Password=kitchen1;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Data Source=tcp:194.163.132.242\\SQLEXPRESS,56773;Initial Catalog=Louver;User ID= kitchen1;Password= kitchen1;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -270,7 +267,7 @@ public partial class LouverContext : DbContext
 
             entity.HasOne(d => d.ClientFile).WithMany(p => p.AnCuttingListDetails)
                 .HasForeignKey(d => d.ClientFileId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_An_CuttingListDetail_ClientFile");
         });
 
@@ -379,6 +376,10 @@ public partial class LouverContext : DbContext
             entity.Property(e => e.AttentionMrTel)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.ClientFileStatus)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("clientFileStatus");
             entity.Property(e => e.ClientId).HasColumnName("ClientID");
             entity.Property(e => e.ClientNeed)
                 .HasMaxLength(1000)
@@ -465,7 +466,6 @@ public partial class LouverContext : DbContext
             entity.HasOne(d => d.Client).WithMany(p => p.ClientFiles)
                 .HasForeignKey(d => d.ClientId)
                 .HasConstraintName("FK_ClientFile_CLIENTS");
-            
         });
 
         modelBuilder.Entity<ClientFileAnalyse>(entity =>

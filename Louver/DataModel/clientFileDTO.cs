@@ -9,8 +9,10 @@
         public string? ClientFilePropertyKitchenTypeDesc { get; set; }
         public DateTime? FileDate { get; set; }
         public DateTime? TarkeebDate { get; set; }
-        
+        public DateTime? CreationDate { get; set; }
+        public DateTime? ModificationDate { get; set; }
 
+        public string? ClientFileStatus { get; set; }
 
     }
 }

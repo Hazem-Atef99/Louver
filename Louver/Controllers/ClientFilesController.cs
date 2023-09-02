@@ -11,6 +11,7 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.Data.SqlClient;
 using AutoMapper;
 using Louver.DataModel;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace Louver.Controllers
 {
@@ -42,7 +43,7 @@ namespace Louver.Controllers
             var results = _mapper.Map<IEnumerable<clientFileDTO>>(clientFilesData);
             if (!string.IsNullOrEmpty(search.name))
             {
-                results = results.Where(R => R.ClientClientName.ToLower().Contains(search.name.ToLower()));
+                results = results.Where(R => R.ClientFileStatus.ToLower().Contains(search.name.ToLower()));
             }
             int resultsCount=clientFilesResult.Count();
             return Ok(new {data=results,count=resultsCount, code=200});
@@ -84,12 +85,49 @@ namespace Louver.Controllers
 
             clientfile.TarkeebDate=clientFile.TarkeebDate;
             clientfile.Modifiedby=clientfile.Modifiedby;
+            clientfile.ModificationDate = DateTime.Now;
             _context.Update(clientfile);
             _context.SaveChanges();
 
             return Ok(clientFile);
         }
+        [HttpPut("editFinalStatus")]
+        public async Task<IActionResult> editFinalStatus(int id , int FinalStatusId)
+        {
+    
 
+            var clientfile = await GetById(id);
+            if (clientfile == null)
+                return NotFound($" No clientfile was found with this ID : {id} ");
+            if (FinalStatusId!=0 || FinalStatusId!=1)
+            {
+                return NotFound("there is no status matches");
+            }
+            clientfile.FinalStatusId = FinalStatusId;
+            clientfile.ModificationDate = DateTime.Now;
+            _context.Update(clientfile);
+            _context.SaveChanges();
+
+            return Ok("Now you can Update this Client File");
+        }
+        [HttpPut("editClientFileStatus")]
+        public async Task<IActionResult> editClientFileStatus(int id, string status)
+        {
+
+
+            var clientfile = await GetById(id);
+            if (clientfile == null)
+                return NotFound($" No clientfile was found with this ID : {id} ");
+     
+                
+            
+            clientfile.ClientFileStatus = status;
+            clientfile.ModificationDate = DateTime.Now;
+            _context.Update(clientfile);
+            _context.SaveChanges();
+
+            return Ok($" Client File stutus changed to {status}");
+        }
         // POST: api/ClientFiles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -99,9 +137,15 @@ namespace Louver.Controllers
           {
               return Problem("Entity set 'LouverContext.ClientFiles'  is null.");
           }
+            if (clientFile.FinalStatusId==1)
+            {
+                return Problem("you can't edit this ClientFile");
+            }
+            clientFile.CreationDate= DateTime.Now;
             _context.ClientFiles.Add(clientFile);
             try
             {
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
@@ -117,6 +161,43 @@ namespace Louver.Controllers
             }
 
             return CreatedAtAction("GetClientFile", new { id = clientFile.ClientFileId }, clientFile);
+        }
+        [HttpPost("copyClientFile")]
+        public async Task<ActionResult> copyClientFile(int id)
+        {
+            if (_context.ClientFiles == null)
+            {
+                return NotFound("no cleint Files exists");
+            }
+            if (!ClientFileExists(id))
+            {
+                return NotFound($"no client file with this id {id}");
+            }
+            //INSERT INTO CLientFile
+            //INSERT INTO ClientFileDetail
+            //var sqlStr1 = $"SELECT [ClientFileID], [FileNo],[FileDate],[ActionByDate],[ActionByHour],[ClientNeed],[CreatedBy],[CreationDate],[Modifiedby] ,[ModificationDate],[ClientID],[DeviceNotes],[Attachment1],[Attachment2],[KitchenHeight] ,[Discount] ,[TarkeebDate] ,[DesignerID] ,[DesignerDate] ,[DiscountType] ,[ContractStatusID] ,[ContractDate] ,[ProjectManager] ,[Sitet] ,[Structure] ,[Remarks] ,[FileTypeID] ,[Project] ,[Owner] ,[Contractor] ,[AttentionMr] ,[ContractorTel] ,[AttentionMrTel] ,[InternalDoorModel] ,[ExternalDoorModel] ,[InternalDoorQuantity] ,[ExternalDoorQuantity] ,[Remarks2] ,[Measurmentid] ,[MeasurmentDate] ,[KitchecnModelID] ,[additionaldiscount] ,[AdditionalNotes] ,[AdditionalAmount] ,[PatternType] ,[KitchenLocation] ,[Notes] ,[SalesID] ,[DesignOrder] ,[ContractNo] ,[OfferNo] ,[TopDiscount] ,[CombinationPeriod] ,[StatusID] ,[AccessoryDiscount] ,[FactoryNotes] ,[FactoryConfirmID] ,[DesignStatusID] ,[Follow] ,[SentToFactoryDate] ,[AllPrice] ,[StartWeek] ,[StartMonth] ,[InvoiceNo] ,[InvoiceDate] ,[WindowPrefix] ,[RelatedClientFileID],[WithTax],[FinalStatusID],[clientFileStatus] from ClientFile Where ClientFIleID = {id}";
+            //var sqlstr2 = $" SELECT  [DetailID] ,[TypeID] ,[CatgeoryID] ,[Width] ,[Hieght] ,[Length] ,[QTY] ,[CreatedBy] ,[CreationDate] ,[ModifiedBy] ,[ModificationDate] from AN_ClientFileDetail Where ClientFIleID = {id}";
+            //List<ClientFile> clientFile = new List<ClientFile>();
+             var clientFile = _context.ClientFiles.Include(x=>x.ClientFileDetails).FirstOrDefault(x=>x.ClientFileId==id);
+             int lastClientFileId = _context.ClientFiles.Max(item => item.ClientFileId);
+            clientFile.ClientFileId = lastClientFileId+1;
+
+            _context.ClientFiles.Add(clientFile);
+            try
+            {
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+              
+             
+                    throw;
+                
+            }
+            // var clientDetails=_context.AnClientFileDetails.FromSqlRaw(sqlstr2);
+
+            return Ok(new { data=clientFile, message = "clientFile Copied Successfully", code = 200 });
         }
 
         // DELETE: api/ClientFiles/5

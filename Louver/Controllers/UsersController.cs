@@ -37,6 +37,40 @@ namespace Louver.Controllers
 
             return Ok(user);
         }
+        [HttpGet("getAssempleTeam")]
+        public async Task<ActionResult<User>> getAssempleTeam()
+        {
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
+            var users = await _context.Users.Where(u => u.UserTypeId==6).ToListAsync();
+            var datacount = users.Count();
+
+            if (users == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new { data=users,count=datacount,code=200 });
+        }
+        [HttpGet("getForman")]
+        public async Task<ActionResult<User>> getForman()
+        {
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
+            var users = await _context.Users.Where(u => u.UserTypeId == 5).ToListAsync();
+            var datacount = users.Count();
+
+            if (users == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new { data = users, count = datacount, code = 200 });
+        }
         //[HttpGet]
         //public async Task<ActionResult<User>> GetUser(string userName, string password)
         //{
@@ -62,9 +96,9 @@ namespace Louver.Controllers
 
         //    return Ok( user);
         //}
-       
 
 
-       
+
+
     }
 }

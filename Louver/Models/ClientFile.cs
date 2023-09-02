@@ -143,6 +143,8 @@ public partial class ClientFile
 
     public int? FinalStatusId { get; set; }
 
+    public string? ClientFileStatus { get; set; }
+
     public virtual ICollection<AnClientFileItem> AnClientFileItems { get; set; } = new List<AnClientFileItem>();
 
     public virtual ICollection<AnCuttingListDetail> AnCuttingListDetails { get; set; } = new List<AnCuttingListDetail>();

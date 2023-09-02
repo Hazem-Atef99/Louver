@@ -5,7 +5,7 @@ namespace Louver.Models;
 
 public partial class AnCuttingListDetail
 {
-    public int ClientFileId { get; set; }
+    public int? ClientFileId { get; set; }
 
     public int DetailId { get; set; }
 
@@ -33,5 +33,5 @@ public partial class AnCuttingListDetail
 
     public int CuttingListDetailId { get; set; }
 
-    public virtual ClientFile ClientFile { get; set; } = null!;
+    public virtual ClientFile? ClientFile { get; set; }
 }
