@@ -83,7 +83,7 @@ namespace Louver.Controllers
             {
                 return BadRequest();
             }
-
+            
             _context.Entry(anClientFileItem).State = EntityState.Modified;
 
             try
@@ -94,7 +94,7 @@ namespace Louver.Controllers
             {
                 if (!AnClientFileItemExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { Message =$"No ClientFileItem Found with This Id : {id}"});
                 }
                 else
                 {
@@ -102,7 +102,7 @@ namespace Louver.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(new { code = 200, Data =anClientFileItem,Message = "Updated" }) ;
         }
 
         // POST: api/AnClientFileItems
