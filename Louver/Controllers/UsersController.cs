@@ -34,6 +34,9 @@ namespace Louver.Controllers
             {
                 return NotFound();
             }
+            if (user.Count() == 0) {
+                return NotFound(new {message="user not exist", code=404});
+            }
 
             return Ok(user);
         }

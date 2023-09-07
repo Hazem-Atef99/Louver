@@ -41,11 +41,16 @@ namespace Louver.Controllers
             var clientFilesResult = await _context.ClientFiles.Where(c => c.StatusId == 4).Include(c => c.AnCuttingListDetails).Include(c => c.Client).Include(c => c.ClientFileProperties).ToListAsync();
              var clientFilesData= clientFilesResult.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size);
             var results = _mapper.Map<IEnumerable<clientFileDTO>>(clientFilesData);
-            if (!string.IsNullOrEmpty(search.name))
+            int resultsCount = clientFilesResult.Count();
+            if (!string.IsNullOrEmpty(search.clientFileStatus))
             {
-                results = results.Where(R => R.ClientFileStatus.ToLower().Contains(search.name.ToLower()));
+                results = results.Where(R => R.ClientFileStatus?.ToLower()==search.clientFileStatus.ToLower());
+                resultsCount = results.Count();
             }
-            int resultsCount=clientFilesResult.Count();
+            if (resultsCount==0)
+            {
+                return NotFound(new {message="no client Files Found",code=404});
+            }
             return Ok(new {data=results,count=resultsCount, code=200});
 
         }
