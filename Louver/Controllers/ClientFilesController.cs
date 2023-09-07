@@ -94,7 +94,7 @@ namespace Louver.Controllers
             _context.Update(clientfile);
             _context.SaveChanges();
 
-            return Ok(clientFile);
+            return Ok(new { message = "updated successfully", data = clientfile, code = 200 });
         }
         [HttpPut("editFinalStatus")]
         public async Task<IActionResult> editFinalStatus(int id , int FinalStatusId)
@@ -113,7 +113,7 @@ namespace Louver.Controllers
             _context.Update(clientfile);
             _context.SaveChanges();
 
-            return Ok("Now you can Update this Client File");
+            return Ok(new {message= "Now you can Update this Client File" ,code=200});
         }
         [HttpPut("editClientFileStatus")]
         public async Task<IActionResult> editClientFileStatus(int id, string status)
@@ -131,7 +131,7 @@ namespace Louver.Controllers
             _context.Update(clientfile);
             _context.SaveChanges();
 
-            return Ok($" Client File stutus changed to {status}");
+            return Ok(new { message= $" Client File stutus changed to {status}" ,code=200});
         }
         // POST: api/ClientFiles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
