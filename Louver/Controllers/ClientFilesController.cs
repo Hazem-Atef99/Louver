@@ -42,9 +42,9 @@ namespace Louver.Controllers
              var clientFilesData= clientFilesResult.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size);
             var results = _mapper.Map<IEnumerable<clientFileDTO>>(clientFilesData);
             int resultsCount = clientFilesResult.Count();
-            if (!string.IsNullOrEmpty(search.clientFileStatus))
+            if (!string.IsNullOrEmpty(search.name))
             {
-                results = results.Where(R => R.ClientFileStatus?.ToLower()==search.clientFileStatus.ToLower());
+                results = results.Where(R => R.ClientFileStatus?.ToLower()==search.name.ToLower());
                 resultsCount = results.Count();
             }
             if (resultsCount==0)
