@@ -108,6 +108,9 @@ namespace Louver.Controllers
             {
                 return NotFound(new { message = "there is no status matches" ,code=400});
             }
+            if (clientfile.FinalStatusId==1) {
+                return NotFound(new { message = "you are not authorized to edit this item", code = 400 });
+            }
             clientfile.FinalStatusId = FinalStatusId;
             clientfile.ModificationDate = DateTime.Now;
             _context.Update(clientfile);
