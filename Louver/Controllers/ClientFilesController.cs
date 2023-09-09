@@ -41,11 +41,16 @@ namespace Louver.Controllers
             var clientFilesResult = await _context.ClientFiles.Where(c => c.StatusId == 4).Include(c => c.AnCuttingListDetails).Include(c => c.Client).Include(c => c.ClientFileProperties).ToListAsync();
              var clientFilesData= clientFilesResult.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size);
             var results = _mapper.Map<IEnumerable<clientFileDTO>>(clientFilesData);
+            int resultsCount = clientFilesResult.Count();
             if (!string.IsNullOrEmpty(search.name))
             {
-                results = results.Where(R => R.ClientFileStatus.ToLower().Contains(search.name.ToLower()));
+                results = results.Where(R => R.ClientFileStatus?.ToLower()==search.name.ToLower());
+                resultsCount = results.Count();
             }
-            int resultsCount=clientFilesResult.Count();
+            if (resultsCount==0)
+            {
+                return NotFound(new {message="no client Files Found",code=404});
+            }
             return Ok(new {data=results,count=resultsCount, code=200});
 
         }
@@ -89,7 +94,7 @@ namespace Louver.Controllers
             _context.Update(clientfile);
             _context.SaveChanges();
 
-            return Ok(new { data = clientFile, message = "edited Successfully", code = 200 });
+            return Ok(new { message = "updated successfully", data = clientfile, code = 200 });
         }
         [HttpPut("editFinalStatus")]
         public async Task<IActionResult> editFinalStatus(int id , int FinalStatusId)
@@ -108,7 +113,7 @@ namespace Louver.Controllers
             _context.Update(clientfile);
             _context.SaveChanges();
 
-            return Ok(new { message = "Now you can Update this Client File" ,code=200});
+            return Ok(new {message= "Now you can Update this Client File" ,code=200});
         }
         [HttpPut("editClientFileStatus")]
         public async Task<IActionResult> editClientFileStatus(int id, string status)
@@ -126,7 +131,7 @@ namespace Louver.Controllers
             _context.Update(clientfile);
             _context.SaveChanges();
 
-            return Ok(new {message= $" Client File stutus changed to {status}" ,code=200});
+            return Ok(new { message= $" Client File stutus changed to {status}" ,code=200});
         }
         // POST: api/ClientFiles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
