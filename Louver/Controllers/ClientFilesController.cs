@@ -72,7 +72,7 @@ namespace Louver.Controllers
         // PUT: api/ClientFiles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutClientFile(int id,[FromBody] updateClientFile clientFile)
+        public async Task<IActionResult> PutClientFile(int id,[FromQuery] updateClientFile clientFile)
         {
             if (id != clientFile.ClientFileID)
             {
@@ -89,7 +89,7 @@ namespace Louver.Controllers
             _context.Update(clientfile);
             _context.SaveChanges();
 
-            return Ok(clientFile);
+            return Ok(new { data = clientFile, message = "edited Successfully", code = 200 });
         }
         [HttpPut("editFinalStatus")]
         public async Task<IActionResult> editFinalStatus(int id , int FinalStatusId)
@@ -98,17 +98,17 @@ namespace Louver.Controllers
 
             var clientfile = await GetById(id);
             if (clientfile == null)
-                return NotFound($" No clientfile was found with this ID : {id} ");
-            if (FinalStatusId!=0 || FinalStatusId!=1)
+                return BadRequest(new {message= $" No clientfile was found with this ID : {id} " ,code=400});
+            if (FinalStatusId!=0 && FinalStatusId!=1)
             {
-                return NotFound("there is no status matches");
+                return NotFound(new { message = "there is no status matches" ,code=400});
             }
             clientfile.FinalStatusId = FinalStatusId;
             clientfile.ModificationDate = DateTime.Now;
             _context.Update(clientfile);
             _context.SaveChanges();
 
-            return Ok("Now you can Update this Client File");
+            return Ok(new { message = "Now you can Update this Client File" ,code=200});
         }
         [HttpPut("editClientFileStatus")]
         public async Task<IActionResult> editClientFileStatus(int id, string status)
@@ -126,7 +126,7 @@ namespace Louver.Controllers
             _context.Update(clientfile);
             _context.SaveChanges();
 
-            return Ok($" Client File stutus changed to {status}");
+            return Ok(new {message= $" Client File stutus changed to {status}" ,code=200});
         }
         // POST: api/ClientFiles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

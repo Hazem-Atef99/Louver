@@ -11,6 +11,7 @@
         public DateTime? TarkeebDate { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? ModificationDate { get; set; }
+        public int? FinalStatusId { get; set; }
 
         public string? ClientFileStatus { get; set; }
 

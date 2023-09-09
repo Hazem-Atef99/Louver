@@ -110,7 +110,7 @@ namespace Louver.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(new {message="updated successfully",code=200});
         }
 
         // POST: api/AnClientFileItems
@@ -145,7 +145,7 @@ namespace Louver.Controllers
             _context.AnClientFileItems.Remove(anClientFileItem);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new {message="deleted succesfully",code=200});
         }
         [HttpDelete("reset")]
         public async Task<ActionResult> ResetClientFileItems(int clientFileId)
