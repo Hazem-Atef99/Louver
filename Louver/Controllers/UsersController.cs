@@ -26,16 +26,16 @@ namespace Louver.Controllers
         {
             if (_context.Users == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var user = await _context.Users.Where(u => u.UserName == userName && u.Password == password && u.StatusId == 1).ToListAsync();
 
             if (user == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             if (user.Count() == 0) {
-                return NotFound(new {message="user not exist", code=404});
+                return BadRequest(new {message="user not exist", code=404});
             }
 
             return Ok(user);
@@ -45,14 +45,14 @@ namespace Louver.Controllers
         {
             if (_context.Users == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var users = await _context.Users.Where(u => u.UserTypeId==6).ToListAsync();
             var datacount = users.Count();
 
             if (users == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             return Ok(new { data=users,count=datacount,code=200 });
@@ -62,14 +62,14 @@ namespace Louver.Controllers
         {
             if (_context.Users == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var users = await _context.Users.Where(u => u.UserTypeId == 5).ToListAsync();
             var datacount = users.Count();
 
             if (users == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             return Ok(new { data = users, count = datacount, code = 200 });
@@ -86,7 +86,7 @@ namespace Louver.Controllers
 
         //    if (_context.Users == null)
         //    {
-        //        return NotFound();
+        //        return BadRequest();
         //    }
         //    var user = await _context.Users
         //        .FromSqlRaw("exec GetUsers @pUserName, @passwordHash,@pStatusID,@pFlag", userNameParam, passwordParam, statusIDParam, flagParam)
@@ -94,7 +94,7 @@ namespace Louver.Controllers
 
         //    if (user == null)
         //    {
-        //        return NotFound();
+        //        return BadRequest();
         //    }
 
         //    return Ok( user);

@@ -31,7 +31,7 @@ namespace Louver.Controllers
         {
             if (_context.Statuses == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var status = await _context.Statuses.Where(s=>s.StatusCategoryId==18).Select(
                 cF => new {
@@ -46,7 +46,7 @@ namespace Louver.Controllers
 
             if (status == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             return Ok(status);
@@ -56,7 +56,7 @@ namespace Louver.Controllers
         {
             if (_context.Statuses == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var status = await _context.Statuses.Where(s => s.StatusCategoryId == 97).Select(
                 cF => new {
@@ -68,7 +68,7 @@ namespace Louver.Controllers
 
             if (status == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             return Ok(status);
@@ -78,7 +78,7 @@ namespace Louver.Controllers
         {
             if (_context.Statuses == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var status = await _context.Statuses.Where(s => s.StatusCategoryId == 89).Select(
                 cF => new {
@@ -90,7 +90,7 @@ namespace Louver.Controllers
 
             if (status == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             return Ok(status);
@@ -100,7 +100,7 @@ namespace Louver.Controllers
         {
             if (_context.Statuses == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var units = await _context.Statuses.Where(u=>u.StatusCategoryId==2).Select(
                 cF => new {
@@ -112,7 +112,7 @@ namespace Louver.Controllers
 
             if (units == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             return Ok(units);

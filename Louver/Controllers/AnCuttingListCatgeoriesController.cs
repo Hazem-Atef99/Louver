@@ -26,7 +26,7 @@ namespace Louver.Controllers
         {
           if (_context.AnCuttingListCatgeories == null)
           {
-              return NotFound();
+              return BadRequest();
           }
             return await _context.AnCuttingListCatgeories.ToListAsync();
         }
@@ -37,13 +37,13 @@ namespace Louver.Controllers
         {
           if (_context.AnCuttingListCatgeories == null)
           {
-              return NotFound();
+              return BadRequest();
           }
             var anCuttingListCatgeory = await _context.AnCuttingListCatgeories.FindAsync(id);
 
             if (anCuttingListCatgeory == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             return anCuttingListCatgeory;
@@ -69,7 +69,7 @@ namespace Louver.Controllers
             {
                 if (!AnCuttingListCatgeoryExists(id))
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
                 else
                 {
@@ -115,12 +115,12 @@ namespace Louver.Controllers
         {
             if (_context.AnCuttingListCatgeories == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var anCuttingListCatgeory = await _context.AnCuttingListCatgeories.FindAsync(id);
             if (anCuttingListCatgeory == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             _context.AnCuttingListCatgeories.Remove(anCuttingListCatgeory);

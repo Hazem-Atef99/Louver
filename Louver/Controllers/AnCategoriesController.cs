@@ -26,7 +26,7 @@ namespace Louver.Controllers
         {
           if (_context.AnCategories == null)
           {
-              return NotFound();
+              return BadRequest();
           }
             return await _context.AnCategories.ToListAsync();
         }
@@ -37,13 +37,13 @@ namespace Louver.Controllers
         {
           if (_context.AnCategories == null)
           {
-              return NotFound();
+              return BadRequest();
           }
             var anCategory = await _context.AnCategories.FindAsync(id);
 
             if (anCategory == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             return anCategory;
@@ -69,7 +69,7 @@ namespace Louver.Controllers
             {
                 if (!AnCategoryExists(id))
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
                 else
                 {
@@ -115,12 +115,12 @@ namespace Louver.Controllers
         {
             if (_context.AnCategories == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var anCategory = await _context.AnCategories.FindAsync(id);
             if (anCategory == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             _context.AnCategories.Remove(anCategory);

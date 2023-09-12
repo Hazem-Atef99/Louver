@@ -29,7 +29,7 @@ namespace Louver.Controllers
         {
           if (_context.AnClientFileItems == null)
           {
-              return NotFound();
+              return BadRequest();
           }
          
             var result= await _context.AnClientFileItems.Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).Where(x=>x.ClientFileiD==clientFileId&&x.CuttingListCategoryId==typeId).Include(x => x.AnClientFileDetails).ToListAsync();
@@ -45,11 +45,11 @@ namespace Louver.Controllers
         {
             if (createdBy<1)
             {
-                return NotFound(new { message = "provide createdBy", Code=404 });
+                return BadRequest(new { message = "provide createdBy", Code=404 });
             }
             if (!ClientFileExists(clientFileId))
             {
-                return NotFound(new { message="No ClientFile With This Id", code=404}) ;
+                return BadRequest(new { message="No ClientFile With This Id", code=404}) ;
             }
             var PclientFileId = new SqlParameter("@pClientFileID", System.Data.SqlDbType.Int);
             var PcreatedBy = new SqlParameter("@pCreatedBy", System.Data.SqlDbType.Int);
@@ -70,13 +70,13 @@ namespace Louver.Controllers
         {
           if (_context.AnClientFileItems == null)
           {
-              return NotFound();
+              return BadRequest();
           }
             var anClientFileItem = await _context.AnClientFileItems.Include(x => x.AnClientFileDetails).ThenInclude(c => c.Catgeory).Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).FirstOrDefaultAsync(x=>x.ClientFileitemId==id);
       
             if (anClientFileItem == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             return anClientFileItem;
@@ -102,7 +102,7 @@ namespace Louver.Controllers
             {
                 if (!AnClientFileItemExists(id))
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
                 else
                 {
@@ -134,12 +134,12 @@ namespace Louver.Controllers
         {
             if (_context.AnClientFileItems == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var anClientFileItem = await _context.AnClientFileItems.Include(x=>x.AnClientFileDetails).FirstAsync(x=>x.ClientFileitemId== id);
             if (anClientFileItem == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             _context.AnClientFileItems.Remove(anClientFileItem);
@@ -153,7 +153,7 @@ namespace Louver.Controllers
             var anClientFileItem = await _context.AnClientFileItems.FirstAsync(x => x.ClientFileiD == clientFileId);
             if (anClientFileItem == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var result = await _context.AnClientFileItems.Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).Where(x => x.ClientFileiD == clientFileId).Include(x => x.AnClientFileDetails).ToListAsync();
             _context.AnClientFileItems.RemoveRange(result);

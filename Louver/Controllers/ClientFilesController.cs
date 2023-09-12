@@ -49,7 +49,7 @@ namespace Louver.Controllers
             }
             if (resultsCount==0)
             {
-                return NotFound(new {message="no client Files Found",code=404});
+                return BadRequest(new {message="no client Files Found",code=404});
             }
             return Ok(new {data=results,count=resultsCount, code=200});
 
@@ -61,14 +61,14 @@ namespace Louver.Controllers
         {
           if (_context.ClientFiles == null)
           {
-              return NotFound();
+              return BadRequest();
           } 
             var clientFileData = await _context.ClientFiles.Include(c => c.Client).Include(c => c.ClientFileProperties).FirstOrDefaultAsync(c => c.ClientFileId == id);
             var result =_mapper.Map<clientFileDTO>(clientFileData);
          
             if (clientFileData == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             return result;
@@ -86,7 +86,7 @@ namespace Louver.Controllers
 
            var clientfile= await GetById(id);
             if (clientfile == null)
-                return NotFound($" No clientfile was found with this ID : {id} ");
+                return BadRequest($" No clientfile was found with this ID : {id} ");
 
             clientfile.TarkeebDate=clientFile.TarkeebDate;
             clientfile.Modifiedby=clientfile.Modifiedby;
@@ -106,10 +106,10 @@ namespace Louver.Controllers
                 return BadRequest(new {message= $" No clientfile was found with this ID : {id} " ,code=400});
             if (FinalStatusId!=0 && FinalStatusId!=1)
             {
-                return NotFound(new { message = "there is no status matches" ,code=400});
+                return BadRequest(new { message = "there is no status matches" ,code=400});
             }
             if (clientfile.FinalStatusId==1) {
-                return NotFound(new { message = "you are not authorized to edit this item", code = 400 });
+                return BadRequest(new { message = "you are not authorized to edit this item", code = 400 });
             }
             clientfile.FinalStatusId = FinalStatusId;
             clientfile.ModificationDate = DateTime.Now;
@@ -125,7 +125,7 @@ namespace Louver.Controllers
 
             var clientfile = await GetById(id);
             if (clientfile == null)
-                return NotFound($" No clientfile was found with this ID : {id} ");
+                return BadRequest($" No clientfile was found with this ID : {id} ");
      
                 
             
@@ -175,11 +175,11 @@ namespace Louver.Controllers
         {
             if (_context.ClientFiles == null)
             {
-                return NotFound("no cleint Files exists");
+                return BadRequest("no cleint Files exists");
             }
             if (!ClientFileExists(id))
             {
-                return NotFound($"no client file with this id {id}");
+                return BadRequest($"no client file with this id {id}");
             }
             //INSERT INTO CLientFile
             //INSERT INTO ClientFileDetail
@@ -214,13 +214,13 @@ namespace Louver.Controllers
         {
             if (_context.ClientFiles == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             var clientFile =  _context.ClientFiles.Include(c => c.AnCuttingListDetails).Include(c => c.Client).Include(c => c.ClientFileProperties).Include(c=>c.AnClientFileItems).FirstOrDefault(c=>c.ClientFileId==id);
             if (clientFile == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var PclientFileId = new SqlParameter("@pClientFileID", System.Data.SqlDbType.Int);
             PclientFileId.Value = id;

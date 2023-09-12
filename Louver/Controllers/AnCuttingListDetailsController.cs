@@ -32,7 +32,7 @@ namespace Louver.Controllers
         {
           if (_context.AnCuttingListDetails == null)
           {
-              return NotFound();
+              return BadRequest();
           }
           var cuttingResult= await _context.AnCuttingListDetails.Include(c => c.ClientFile).Where(c => c.ClientFile.ClientFileId == ClientFileId && c.TypeId==typeId).ToListAsync();
             var anCuttingLists = cuttingResult.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size);
@@ -45,7 +45,7 @@ namespace Louver.Controllers
         {
             if (_context.AnCuttingListDetails == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var cuttingResult = await _context.AnCuttingListDetails.Where(c=>c.ClientFileId==clientFileId&&c.TypeId==typeId).ToListAsync();
             List<string> colorsList=new List<string>();
@@ -63,14 +63,14 @@ namespace Louver.Controllers
         {
           if (_context.AnCuttingListDetails == null)
           {
-              return NotFound();
+              return BadRequest();
           }
             var anCuttingListDetail = await _context.AnCuttingListDetails.Include(c=>c.ClientFile).FirstOrDefaultAsync(c=>c.CuttingListDetailId==id);
             var result=_mapper.Map<AnCuttingListDetailDTO>(anCuttingListDetail);
 
             if (anCuttingListDetail == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             return result;
@@ -97,7 +97,7 @@ namespace Louver.Controllers
             {
                 if (!AnCuttingListDetailExists(id))
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
                 else
                 {
@@ -145,12 +145,12 @@ namespace Louver.Controllers
         {
             if (_context.AnCuttingListDetails == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             var anCuttingListDetail = await _context.AnCuttingListDetails.FindAsync(id);
             if (anCuttingListDetail == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             _context.AnCuttingListDetails.Remove(anCuttingListDetail);
