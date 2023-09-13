@@ -31,6 +31,9 @@ namespace Louver.Controllers
           {
               return BadRequest();
           }
+          if(typeId ==0||clientFileId==0) { 
+            return BadRequest();
+            }
          
             var result= await _context.AnClientFileItems.Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).Where(x=>x.ClientFileiD==clientFileId&&x.CuttingListCategoryId==typeId).Include(x => x.AnClientFileDetails).ToListAsync();
             var Data= result.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size);
@@ -92,7 +95,7 @@ namespace Louver.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(anClientFileItem).State = EntityState.Modified;
+            _context.Update(anClientFileItem);
 
             try
             {
