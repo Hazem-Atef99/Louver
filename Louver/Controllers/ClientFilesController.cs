@@ -12,6 +12,7 @@ using Microsoft.Data.SqlClient;
 using AutoMapper;
 using Louver.DataModel;
 using DocumentFormat.OpenXml.Wordprocessing;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Louver.Controllers
 {
@@ -102,11 +103,14 @@ namespace Louver.Controllers
             return Ok(new { message = "updated successfully", data = clientfile, code = 200 });
         }
         [HttpPut("editFinalStatus")]
-        public async Task<IActionResult> editFinalStatus(int id , int FinalStatusId)
+        public async Task<IActionResult> editFinalStatus(int id , int FinalStatusId,int userId)
         {
-    
-
             var clientfile = await GetById(id);
+
+            if (!GetUser(userId) && clientfile.FinalStatusId == 1)
+            {
+                return BadRequest(new { message = "you are not authorized to edit this item", code = 400 });
+            }
             if (clientfile == null)
                 return BadRequest(new {message= $" No clientfile was found with this ID : {id} " ,code=400});
             if (FinalStatusId!=0 && FinalStatusId!=1)
@@ -124,11 +128,16 @@ namespace Louver.Controllers
             return Ok(new {message= "Now you can Update this Client File" ,code=200});
         }
         [HttpPut("editClientFileStatus")]
-        public async Task<IActionResult> editClientFileStatus(int id, string status)
+        public async Task<IActionResult> editClientFileStatus(int id, string status,int userId)
         {
 
 
             var clientfile = await GetById(id);
+
+            if (!GetUser(userId) && clientfile.FinalStatusId == 1)
+            {
+                return BadRequest(new { message = "you are not authorized to edit this item", code = 400 });
+            }
             if (clientfile == null)
                 return BadRequest($" No clientfile was found with this ID : {id} ");
      
@@ -215,8 +224,14 @@ namespace Louver.Controllers
 
         // DELETE: api/ClientFiles/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteClientFile(int id)
+        public async Task<IActionResult> DeleteClientFile(int id,int userId)
         {
+            var clientfile = await GetById(id);
+
+            if (!GetUser(userId) && clientfile.FinalStatusId == 1)
+            {
+                return BadRequest(new { message = "you are not authorized to edit this item", code = 400 });
+            }
             if (_context.ClientFiles == null)
             {
                 return BadRequest();
