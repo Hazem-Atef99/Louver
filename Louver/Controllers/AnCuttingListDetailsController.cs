@@ -168,7 +168,9 @@ namespace Louver.Controllers
               return Problem("Entity set 'LouverContext.AnCuttingListDetails'  is null.");
 
           }
-          //var anCuttingListDetails = _mapper.Map<AnCuttingListDetail>(anCuttingListDetail);
+            //var anCuttingListDetails = _mapper.Map<AnCuttingListDetail>(anCuttingListDetail);
+            anCuttingListDetail.CreationDate = DateTime.Now;
+
             _context.AnCuttingListDetails.Add(anCuttingListDetail);
             try
             {
