@@ -77,14 +77,19 @@ namespace Louver.Controllers
         // PUT: api/ClientFiles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutClientFile(int id,[FromBody] updateClientFile clientFile)
+        public async Task<IActionResult> PutClientFile(int id,[FromBody] updateClientFile clientFile,int userId)
         {
+           var clientfile= await GetById(id);
+            
+            if (!GetUser(userId) &&clientfile.FinalStatusId==1)
+            {
+                return BadRequest(new { message = "you are not authorized to edit this item", code = 400 });
+            }
             if (id != clientFile.ClientFileID)
             {
                 return BadRequest();
             }
 
-           var clientfile= await GetById(id);
             if (clientfile == null)
                 return BadRequest($" No clientfile was found with this ID : {id} ");
 
@@ -237,5 +242,24 @@ namespace Louver.Controllers
         {
             return _context.ClientFiles.Include(c => c.Client).Include(c => c.ClientFileProperties).FirstOrDefaultAsync(m => m.ClientFileId == id);
         }
+        private bool GetUser(int id)
+        {
+            var user= _context.Users.FirstOrDefault(u => u.UserId == id);
+            if (isAdmin(user))
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool isAdmin(User user)
+        {
+            //var user=GetUser(id);
+           if (user.IsAdmin==1)
+            {
+                return true;
+            }
+            return false;
+        }
+     
     }
 }
