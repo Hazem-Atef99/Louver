@@ -131,7 +131,7 @@ public partial class LouverContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=tcp:194.163.132.242\\SQLEXPRESS,56773;Initial Catalog=Louver;User ID= kitchen1;Password= kitchen1;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Data Source=tcp:194.163.132.242\\\\\\\\SQLEXPRESS,56773 ;Database = Louver;User ID=kitchen1;Password=kitchen1;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -261,14 +261,33 @@ public partial class LouverContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.CreationDate).HasColumnType("datetime");
             entity.Property(e => e.DetailId).HasColumnName("DetailID");
+            entity.Property(e => e.GrainId).HasColumnName("GrainID");
             entity.Property(e => e.MaterialId).HasColumnName("MaterialID");
             entity.Property(e => e.ModificationDate).HasColumnType("datetime");
+            entity.Property(e => e.SizeId).HasColumnName("SizeID");
+            entity.Property(e => e.ThicknessId).HasColumnName("ThicknessID");
             entity.Property(e => e.TypeId).HasColumnName("TypeID");
 
             entity.HasOne(d => d.ClientFile).WithMany(p => p.AnCuttingListDetails)
                 .HasForeignKey(d => d.ClientFileId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_An_CuttingListDetail_ClientFile");
+
+            entity.HasOne(d => d.GrainNavigation).WithMany(p => p.AnCuttingListDetailGrainNavigations)
+                .HasForeignKey(d => d.GrainId)
+                .HasConstraintName("Grain_cuttingList");
+
+            entity.HasOne(d => d.Material).WithMany(p => p.AnCuttingListDetailMaterials)
+                .HasForeignKey(d => d.MaterialId)
+                .HasConstraintName("An_CuttingListDetail_Status1_material");
+
+            entity.HasOne(d => d.SizeNavigation).WithMany(p => p.AnCuttingListDetailSizeNavigations)
+                .HasForeignKey(d => d.SizeId)
+                .HasConstraintName("Size");
+
+            entity.HasOne(d => d.ThicknessNavigation).WithMany(p => p.AnCuttingListDetailThicknessNavigations)
+                .HasForeignKey(d => d.ThicknessId)
+                .HasConstraintName("Thikness");
         });
 
         modelBuilder.Entity<AnHandType>(entity =>

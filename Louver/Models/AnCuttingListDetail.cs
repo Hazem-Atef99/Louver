@@ -15,9 +15,15 @@ public partial class AnCuttingListDetail
 
     public string? Color1 { get; set; }
 
+    public int? ThicknessId { get; set; }
+
     public int? Thickness { get; set; }
 
+    public int? SizeId { get; set; }
+
     public int? Size { get; set; }
+
+    public int? GrainId { get; set; }
 
     public int? Grain { get; set; }
 
@@ -34,4 +40,12 @@ public partial class AnCuttingListDetail
     public int CuttingListDetailId { get; set; }
 
     public virtual ClientFile? ClientFile { get; set; }
+
+    public virtual Status? GrainNavigation { get; set; }
+
+    public virtual Status? Material { get; set; }
+
+    public virtual Status? SizeNavigation { get; set; }
+
+    public virtual Status? ThicknessNavigation { get; set; }
 }

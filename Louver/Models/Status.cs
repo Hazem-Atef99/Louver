@@ -103,5 +103,13 @@ public partial class Status
 
     public virtual ICollection<AnClientFileItem> AnClientFileItemUnits { get; set; } = new List<AnClientFileItem>();
 
+    public virtual ICollection<AnCuttingListDetail> AnCuttingListDetailGrainNavigations { get; set; } = new List<AnCuttingListDetail>();
+
+    public virtual ICollection<AnCuttingListDetail> AnCuttingListDetailMaterials { get; set; } = new List<AnCuttingListDetail>();
+
+    public virtual ICollection<AnCuttingListDetail> AnCuttingListDetailSizeNavigations { get; set; } = new List<AnCuttingListDetail>();
+
+    public virtual ICollection<AnCuttingListDetail> AnCuttingListDetailThicknessNavigations { get; set; } = new List<AnCuttingListDetail>();
+
     public virtual StatusCategory? StatusCategory { get; set; }
 }

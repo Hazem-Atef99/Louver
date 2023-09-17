@@ -6,8 +6,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Louver.Models;
-using AutoMapper;
+using NuGet.Protocol;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.Data.SqlClient;
 using Louver.DataModel;
+using AutoMapper;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using ServiceStack;
+using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
 
 namespace Louver.Controllers
 {
@@ -34,11 +40,34 @@ namespace Louver.Controllers
           {
               return BadRequest();
           }
-          var cuttingResult= await _context.AnCuttingListDetails.Include(c => c.ClientFile).Where(c => c.ClientFile.ClientFileId == ClientFileId && c.TypeId==typeId).ToListAsync();
+          var cuttingResult= await _context.AnCuttingListDetails.Include(c => c.ClientFile).Include(x=>x.GrainNavigation).Include(x=>x.Material).Include(x => x.ThicknessNavigation).Include(x => x.SizeNavigation).Where(c => c.ClientFile.ClientFileId == ClientFileId && c.TypeId==typeId).Select( x=>
+                              new
+                              {
+                                  CuttingListDetailId=x.CuttingListDetailId,
+                                  ClientFileId =x.ClientFileId,
+                                  DetailId=x.DetailId,
+                                  TypeId=x.TypeId,
+                                  MaterialId=x.MaterialId,
+                                  Thickness=x.ThicknessId,
+                                  Size=x.SizeId,
+                                  GrainId=x.GrainId,
+                                  Color1 =x.Color1,
+                                  OrderBy=x.OrderBy,
+                                  CreatedBy=x.CreatedBy,
+                                  CreationDate = x.CreationDate,
+                                  ModifiedBy=x.ModifiedBy,
+                                  ModificationDate=x.ModificationDate,
+                                  MaterialName=x.Material.Description+x.Material.DefaultDesc,
+                                  GrainName=x.GrainNavigation.Description+x.GrainNavigation.DefaultDesc,
+                                  ThicknessName=x.ThicknessNavigation.Description+x.ThicknessNavigation.DefaultDesc,
+                                  SizeName=x.SizeNavigation.Description+x.SizeNavigation.DefaultDesc,
+
+                              }).ToListAsync();
             var anCuttingLists = cuttingResult.Skip(queryPrameters.size * (queryPrameters.page - 1)).Take(queryPrameters.size);
-            var results = _mapper.Map<IEnumerable<AnCuttingListDetailDTO>>(anCuttingLists);
+            //var results = _mapper.Map<IEnumerable<AnCuttingListDetailDTO>>(anCuttingLists);
+         
             int resultsCount= cuttingResult.Count();
-            return Ok(new {data=results,count = resultsCount});
+            return Ok(new {data=cuttingResult,count = resultsCount});
         }
         [HttpGet("getColors")]
         public async Task<ActionResult> getColorlist(int clientFileId, int typeId)
@@ -65,29 +94,50 @@ namespace Louver.Controllers
           {
               return BadRequest();
           }
-            var anCuttingListDetail = await _context.AnCuttingListDetails.Include(c=>c.ClientFile).FirstOrDefaultAsync(c=>c.CuttingListDetailId==id);
-            var result=_mapper.Map<AnCuttingListDetailDTO>(anCuttingListDetail);
+            var anCuttingListDetail = await _context.AnCuttingListDetails.Include(c => c.ClientFile).Include(x => x.GrainNavigation).Include(x => x.Material).Include(x => x.ThicknessNavigation).Include(x => x.SizeNavigation).Where(c => c.CuttingListDetailId==id).Select(x =>
+                              new
+                              {
+                                  CuttingListDetailId = x.CuttingListDetailId,
+                                  ClientFileId = x.ClientFileId,
+                                  DetailId = x.DetailId,
+                                  TypeId = x.TypeId,
+                                  MaterialId = x.MaterialId,
+                                  Thickness = x.ThicknessId,
+                                  Size = x.SizeId,
+                                  GrainId = x.GrainId,
+                                  Color1 = x.Color1,
+                                  OrderBy = x.OrderBy,
+                                  CreatedBy = x.CreatedBy,
+                                  CreationDate = x.CreationDate,
+                                  ModifiedBy = x.ModifiedBy,
+                                  ModificationDate = x.ModificationDate,
+                                  MaterialName = x.Material.Description + x.Material.DefaultDesc,
+                                  GrainName = x.GrainNavigation.Description + x.GrainNavigation.DefaultDesc,
+                                  ThicknessName = x.ThicknessNavigation.Description + x.ThicknessNavigation.DefaultDesc,
+                                  SizeName = x.SizeNavigation.Description + x.SizeNavigation.DefaultDesc,
+
+                              }).ToListAsync();
 
             if (anCuttingListDetail == null)
             {
                 return BadRequest();
             }
 
-            return result;
+            return Ok(new { data=anCuttingListDetail,code=200});
         }
 
         // PUT: api/AnCuttingListDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAnCuttingListDetail(int id, AnCuttingListDetailDTO anCuttingListDetail)
+        public async Task<IActionResult> PutAnCuttingListDetail(int id, AnCuttingListDetail anCuttingListDetail)
         {
             if (id != anCuttingListDetail.CuttingListDetailId)
             {
                 return BadRequest();
             }
-             var result =_mapper.Map<AnCuttingListDetail>(anCuttingListDetail);
+             //var result =_mapper.Map<AnCuttingListDetail>(anCuttingListDetail);
 
-            _context.Entry(result).State = EntityState.Modified;
+            _context.Update(anCuttingListDetail);
 
             try
             {
@@ -111,15 +161,15 @@ namespace Louver.Controllers
         // POST: api/AnCuttingListDetails
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<AnCuttingListDetailDTO>> PostAnCuttingListDetail(AnCuttingListDetailDTO anCuttingListDetail)
+        public async Task<ActionResult<AnCuttingListDetailDTO>> PostAnCuttingListDetail(AnCuttingListDetail anCuttingListDetail)
         {
           if (_context.AnCuttingListDetails == null)
           {
               return Problem("Entity set 'LouverContext.AnCuttingListDetails'  is null.");
 
           }
-          var anCuttingListDetails = _mapper.Map<AnCuttingListDetail>(anCuttingListDetail);
-            _context.AnCuttingListDetails.Add(anCuttingListDetails);
+          //var anCuttingListDetails = _mapper.Map<AnCuttingListDetail>(anCuttingListDetail);
+            _context.AnCuttingListDetails.Add(anCuttingListDetail);
             try
             {
                 await _context.SaveChangesAsync();
