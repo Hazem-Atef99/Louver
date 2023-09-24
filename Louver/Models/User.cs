@@ -24,4 +24,8 @@ public partial class User
     public int? StatusId { get; set; }
 
     public int? ProjectId { get; set; }
+
+    public int? TeamId { get; set; }
+
+    public virtual Team? Team { get; set; }
 }

@@ -55,6 +55,8 @@ public partial class LouverContext : DbContext
 
     public virtual DbSet<ClientFileProperty1> ClientFileProperties1 { get; set; }
 
+    public virtual DbSet<ClientFileRelatedDate> ClientFileRelatedDates { get; set; }
+
     public virtual DbSet<ClientFileStatus> ClientFileStatuses { get; set; }
 
     public virtual DbSet<ClientFileTawseel> ClientFileTawseels { get; set; }
@@ -127,11 +129,13 @@ public partial class LouverContext : DbContext
 
     public virtual DbSet<StatusCategory> StatusCategories { get; set; }
 
+    public virtual DbSet<Team> Teams { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=tcp:194.163.132.242\\\\\\\\SQLEXPRESS,56773 ;Database = Louver;User ID=kitchen1;Password=kitchen1;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Data Source=tcp:194.163.132.242\\SQLEXPRESS,56773;Database=Louver;User ID= kitchen1;Password= kitchen1;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -481,6 +485,11 @@ public partial class LouverContext : DbContext
             entity.Property(e => e.WindowPrefix)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.ClientFileNavigation).WithOne(p => p.ClientFile)
+                .HasForeignKey<ClientFile>(d => d.ClientFileId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ClientFile_ClientFileRelatedDates");
 
             entity.HasOne(d => d.Client).WithMany(p => p.ClientFiles)
                 .HasForeignKey(d => d.ClientId)
@@ -937,6 +946,21 @@ public partial class LouverContext : DbContext
                 .HasMaxLength(200)
                 .IsUnicode(false);
             entity.Property(e => e.WallTopId).HasColumnName("WallTopID");
+        });
+
+        modelBuilder.Entity<ClientFileRelatedDate>(entity =>
+        {
+            entity.HasKey(e => e.ClientFileId);
+
+            entity.Property(e => e.ClientFileId)
+                .ValueGeneratedNever()
+                .HasColumnName("ClientFileID");
+            entity.Property(e => e.FinishDate).HasColumnType("date");
+            entity.Property(e => e.ProductionAnalyzeDate).HasColumnType("date");
+            entity.Property(e => e.ProductionEndDate).HasColumnType("date");
+            entity.Property(e => e.ProductiorStartDate).HasColumnType("date");
+            entity.Property(e => e.StartDate).HasColumnType("date");
+            entity.Property(e => e.StartPaintDate).HasColumnType("date");
         });
 
         modelBuilder.Entity<ClientFileStatus>(entity =>
@@ -1801,6 +1825,19 @@ public partial class LouverContext : DbContext
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
         });
 
+        modelBuilder.Entity<Team>(entity =>
+        {
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.TeamName)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("teamName");
+            entity.Property(e => e.TeamType)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("teamType");
+        });
+
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.UserId).HasName("PK_Inv_Users");
@@ -1817,11 +1854,16 @@ public partial class LouverContext : DbContext
             entity.Property(e => e.Password).HasMaxLength(256);
             entity.Property(e => e.ProjectId).HasColumnName("ProjectID");
             entity.Property(e => e.StatusId).HasColumnName("StatusID");
+            entity.Property(e => e.TeamId).HasColumnName("TeamID");
             entity.Property(e => e.UserName).HasMaxLength(256);
             entity.Property(e => e.UserNo)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.UserTypeId).HasColumnName("UserTypeID");
+
+            entity.HasOne(d => d.Team).WithMany(p => p.Users)
+                .HasForeignKey(d => d.TeamId)
+                .HasConstraintName("FK_Users_Teams");
         });
 
         OnModelCreatingPartial(modelBuilder);

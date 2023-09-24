@@ -9,6 +9,7 @@ using Louver.Models;
 using Microsoft.Data.SqlClient;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Louver.DataModel;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace Louver.Controllers
 {
@@ -52,7 +53,7 @@ namespace Louver.Controllers
             {
                 return BadRequest(new { message = "you are not authorized", code = 400 });
             }
-            var Users = await _context.Users.ToListAsync();
+            var Users = await _context.Users.Include(u=>u.Team).ToListAsync();
             return Ok(new {data=Users,code=200});
         }
         [HttpGet("getAssempleTeam")]
@@ -66,7 +67,7 @@ namespace Louver.Controllers
             {
                 return BadRequest(new { message = "you are not authorized", code = 400 });
             }
-            var users = await _context.Users.Where(u => u.UserTypeId==6).ToListAsync();
+            var users = await _context.Users.Where(u => u.Team.TeamType == "assemple").ToListAsync();
             var datacount = users.Count();
             if (datacount == 0)
             {
@@ -90,7 +91,7 @@ namespace Louver.Controllers
             {
                 return BadRequest(new { message = "you are not authorized", code = 400 });
             }
-            var users = await _context.Users.Where(u => u.UserTypeId == 5).ToListAsync();
+            var users = await _context.Users.Where(u => u.Team.TeamType == "operation").ToListAsync();
             var datacount = users.Count();
             if (datacount == 0)
             {
@@ -114,7 +115,7 @@ namespace Louver.Controllers
             {
                 return BadRequest(new { message = "you are not authorized", code = 400 });
             }
-            var users = await _context.Users.Where(u => u.UserTypeId == 4).ToListAsync();
+            var users = await _context.Users.Where(u => u.Team.TeamType == "painting").ToListAsync();
             var datacount = users.Count();
             if (datacount == 0)
             {
@@ -127,44 +128,64 @@ namespace Louver.Controllers
 
             return Ok(new { data = users, count = datacount, code = 200 });
         }
-        [HttpPut("Add_Assemple_Team")]
-        public async Task<IActionResult> AddToAssempleTeam(int id, int userId)
+        //[HttpPut("Add_Assemple_Team")]
+        //public async Task<IActionResult> AddToAssempleTeam(int id, int userId)
+        //{
+        //    if (!GetUser(userId))
+        //    {
+        //        return BadRequest(new { message = "you are not authorized", code = 400 });
+        //    }
+        //    var user = await GetById(id);
+        //    user.UserTypeId = 6;
+        //    _context.Update(user);
+        //    _context.SaveChanges();
+        //    return Ok(new {Message = " User Added Successfully",Code=200});
+        //}
+        //[HttpPut("Add_Operating_Team")]
+        //public async Task<IActionResult> AddToOperatingTeam(int id, int userId)
+        //{
+        //    if (!GetUser(userId))
+        //    {
+        //        return BadRequest(new { message = "you are not authorized", code = 400 });
+        //    }
+        //    var user = await GetById(id);
+        //    user.UserTypeId = 5;
+        //    _context.Update(user);
+        //    _context.SaveChanges();
+        //    return Ok(new { Message = " User Added Successfully", Code = 200 });
+        //}
+        //[HttpPut("Add_Painting_Team")]
+        //public async Task<IActionResult> AddToPaintingTeam(int id, int userId)
+        //{
+        //    if (!GetUser(userId))
+        //    {
+        //        return BadRequest(new { message = "you are not authorized", code = 400 });
+        //    }
+        //    var user = await GetById(id);
+        //    user.UserTypeId = 4;
+        //    _context.Update(user);
+        //    _context.SaveChanges();
+        //    return Ok(new { Message = " User Added Successfully", Code = 200 });
+        //}
+        [HttpPut]
+        public async Task<IActionResult> addUserToTeam (int userId,int id,int teamId)
         {
             if (!GetUser(userId))
             {
                 return BadRequest(new { message = "you are not authorized", code = 400 });
             }
-            var user = await GetById(id);
-            user.UserTypeId = 6;
+            var user= await GetById(id);
+            user.TeamId = teamId;
             _context.Update(user);
-            _context.SaveChanges();
-            return Ok(new {Message = " User Added Successfully",Code=200});
-        }
-        [HttpPut("Add_Operating_Team")]
-        public async Task<IActionResult> AddToOperatingTeam(int id, int userId)
-        {
-            if (!GetUser(userId))
+            try
             {
-                return BadRequest(new { message = "you are not authorized", code = 400 });
+                _context.SaveChanges();
             }
-            var user = await GetById(id);
-            user.UserTypeId = 5;
-            _context.Update(user);
-            _context.SaveChanges();
-            return Ok(new { Message = " User Added Successfully", Code = 200 });
-        }
-        [HttpPut("Add_Painting_Team")]
-        public async Task<IActionResult> AddToPaintingTeam(int id, int userId)
-        {
-            if (!GetUser(userId))
-            {
-                return BadRequest(new { message = "you are not authorized", code = 400 });
+            catch (Exception ex) {
+                return BadRequest(ex);
             }
-            var user = await GetById(id);
-            user.UserTypeId = 4;
-            _context.Update(user);
-            _context.SaveChanges();
-            return Ok(new { Message = " User Added Successfully", Code = 200 });
+           
+            return Ok();
         }
         private Task<User> GetById(int id)
         {
