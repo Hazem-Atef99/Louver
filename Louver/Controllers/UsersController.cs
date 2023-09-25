@@ -53,81 +53,81 @@ namespace Louver.Controllers
             {
                 return BadRequest(new { message = "you are not authorized", code = 400 });
             }
-            var Users = await _context.Users.Include(u=>u.Team).ToListAsync();
+            var Users = await _context.Users.ToListAsync();
             return Ok(new {data=Users,code=200});
         }
-        [HttpGet("getAssempleTeam")]
-        public async Task<ActionResult<User>> getAssempleTeam(int userId)
-        {
-            if (_context.Users == null)
-            {
-                return BadRequest();
-            }
-            if (!GetUser(userId))
-            {
-                return BadRequest(new { message = "you are not authorized", code = 400 });
-            }
-            var users = await _context.Users.Where(u => u.Team.TeamType == "assemple").ToListAsync();
-            var datacount = users.Count();
-            if (datacount == 0)
-            {
-                return NotFound(new { Message = "No Users Found", Code = 404 });
-            }
-            if (users == null)
-            {
-                return BadRequest();
-            }
+        //[HttpGet("getAssempleTeam")]
+        //public async Task<ActionResult<User>> getAssempleTeam(int userId)
+        //{
+        //    if (_context.Users == null)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    if (!GetUser(userId))
+        //    {
+        //        return BadRequest(new { message = "you are not authorized", code = 400 });
+        //    }
+        //    var users = await _context.Users.Where(u => u.Team.TeamType == "assemple").ToListAsync();
+        //    var datacount = users.Count();
+        //    if (datacount == 0)
+        //    {
+        //        return NotFound(new { Message = "No Users Found", Code = 404 });
+        //    }
+        //    if (users == null)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            return Ok(new { data=users,count=datacount,code=200 });
-        }
-        [HttpGet("getOperations")]
-        public async Task<ActionResult<User>> getOperation(int userId)
-        {
-            if (_context.Users == null)
-            {
-                return BadRequest();
-            }
-            if (!GetUser(userId))
-            {
-                return BadRequest(new { message = "you are not authorized", code = 400 });
-            }
-            var users = await _context.Users.Where(u => u.Team.TeamType == "operation").ToListAsync();
-            var datacount = users.Count();
-            if (datacount == 0)
-            {
-                return NotFound(new { Message = "No Users Found", Code = 404 });
-            }
-            if (users == null)
-            {
-                return BadRequest();
-            }
+        //    return Ok(new { data=users,count=datacount,code=200 });
+        //}
+        //[HttpGet("getOperations")]
+        //public async Task<ActionResult<User>> getOperation(int userId)
+        //{
+        //    if (_context.Users == null)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    if (!GetUser(userId))
+        //    {
+        //        return BadRequest(new { message = "you are not authorized", code = 400 });
+        //    }
+        //    var users = await _context.Users.Where(u => u.Team.TeamType == "operation").ToListAsync();
+        //    var datacount = users.Count();
+        //    if (datacount == 0)
+        //    {
+        //        return NotFound(new { Message = "No Users Found", Code = 404 });
+        //    }
+        //    if (users == null)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            return Ok(new { data = users, count = datacount, code = 200 });
-        }
-        [HttpGet("getPainting")]
-        public async Task<ActionResult<User>> getPainting(int userId)
-        {
-            if (_context.Users == null)
-            {
-                return BadRequest();
-            }
-            if (!GetUser(userId))
-            {
-                return BadRequest(new { message = "you are not authorized", code = 400 });
-            }
-            var users = await _context.Users.Where(u => u.Team.TeamType == "painting").ToListAsync();
-            var datacount = users.Count();
-            if (datacount == 0)
-            {
-                return NotFound(new { Message = "No Users Found", Code = 404 });
-            }
-            if (users == null)
-            {
-                return BadRequest();
-            }
+        //    return Ok(new { data = users, count = datacount, code = 200 });
+        //}
+        //[HttpGet("getPainting")]
+        //public async Task<ActionResult<User>> getPainting(int userId)
+        //{
+        //    if (_context.Users == null)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    if (!GetUser(userId))
+        //    {
+        //        return BadRequest(new { message = "you are not authorized", code = 400 });
+        //    }
+        //    var users = await _context.Users.Where(u => u.Team.TeamType == "painting").ToListAsync();
+        //    var datacount = users.Count();
+        //    if (datacount == 0)
+        //    {
+        //        return NotFound(new { Message = "No Users Found", Code = 404 });
+        //    }
+        //    if (users == null)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            return Ok(new { data = users, count = datacount, code = 200 });
-        }
+        //    return Ok(new { data = users, count = datacount, code = 200 });
+        //}
         //[HttpPut("Add_Assemple_Team")]
         //public async Task<IActionResult> AddToAssempleTeam(int id, int userId)
         //{
@@ -168,7 +168,7 @@ namespace Louver.Controllers
         //    return Ok(new { Message = " User Added Successfully", Code = 200 });
         //}
         [HttpPut]
-        public async Task<IActionResult> addUserToTeam (int userId,int id,int teamId)
+        public async Task<IActionResult> addUserToTeam (int userId, list<int> id,int teamId)
         {
             if (!GetUser(userId))
             {
@@ -185,7 +185,7 @@ namespace Louver.Controllers
                 return BadRequest(ex);
             }
            
-            return Ok();
+            return Ok(new {Message ="User Added To Team"});
         }
         private Task<User> GetById(int id)
         {

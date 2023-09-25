@@ -39,7 +39,69 @@ namespace Louver.Controllers
 
             return Ok(new { data = teams, count = count, code = 200 });
         }
-
+        [HttpGet("GetPaintingTeam")]
+        public async Task<ActionResult<IEnumerable<Team>>> GetPaintingTeam()
+        {
+            if (_context.Teams == null)
+            {
+                return NotFound(new { message = "No Data Found", code = 404 });
+            }
+            var teams = await _context.Teams.Include(t => t.Users).Include(t => t.ClientFile).Where(t=>t.TeamType=="painting").Select(t => new {
+                TeamId = t.Id,
+                TeamName = t.TeamName,
+                TeamType = t.TeamType,
+                User = t.Users,
+                ClientFileRelatedDates = t.ClientFileNavigation
+            }).ToListAsync();
+            var count = teams.Count();
+            if (count == 0)
+            {
+                return NotFound(new { message = "No Data Found", code = 404 });
+            }
+            return Ok(new { data = teams, count = count, code = 200 });
+        }
+        [HttpGet("GetOperationTeam")]
+        public async Task<ActionResult<IEnumerable<Team>>> GetOperationTeam()
+        {
+            if (_context.Teams == null)
+            {
+                return NotFound(new { message = "No Data Found", code = 404 });
+            }
+            var teams = await _context.Teams.Include(t => t.Users).Include(t => t.ClientFile).Where(t => t.TeamType == "operation").Select(t => new {
+                TeamId = t.Id,
+                TeamName = t.TeamName,
+                TeamType = t.TeamType,
+                User = t.Users,
+                ClientFileRelatedDates = t.ClientFileNavigation
+            }).ToListAsync();
+            var count = teams.Count();
+            if (count == 0)
+            {
+                return NotFound(new { message = "No Data Found", code = 404 });
+            }
+            return Ok(new { data = teams, count = count, code = 200 });
+        }
+        [HttpGet("GetAssempleTeam")]
+        public async Task<ActionResult<IEnumerable<Team>>> GetAssempleTeam()
+        {
+            if (_context.Teams == null)
+            {
+                return NotFound(new { message = "No Data Found", code = 404 });
+            }
+            var teams = await _context.Teams.Include(t => t.Users).Include(t => t.ClientFile).Where(t => t.TeamType == "assemple").Select(t => new {
+                TeamId = t.Id,
+                TeamName = t.TeamName,
+                TeamType = t.TeamType,
+                User = t.Users,
+                ClientFileRelatedDates = t.ClientFileNavigation
+            }).ToListAsync();
+            var count = teams.Count();
+            if (count == 0)
+            {
+                return NotFound(new { message = "No Data Found", code = 404 });
+            }
+            return Ok(new { data = teams, count = count, code = 200 });
+        }
         // GET: api/Teams/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Team>> GetTeam(int id)
@@ -64,6 +126,7 @@ namespace Louver.Controllers
             //{
             //    return BadRequest(new { message = "you are not authorized", code = 400 });
             //}
+            
             var team = await GetById(id);
             team.ClientFileId= clienFileId;
              _context.Update(team);
@@ -119,6 +182,11 @@ namespace Louver.Controllers
           {
               return Problem("Entity set 'LouverContext.Teams'  is null.");
           }
+            var teams = await _context.Teams.Where(t => t.TeamType == team.TeamType && t.TeamName == team.TeamName).ToListAsync();
+          if (teams.Count!=0)
+            {
+                return BadRequest(new { Message = "Team Already Exists" });
+            }
             _context.Teams.Add(team);
             await _context.SaveChangesAsync();
 
