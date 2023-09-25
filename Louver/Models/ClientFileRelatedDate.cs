@@ -20,4 +20,6 @@ public partial class ClientFileRelatedDate
     public DateTime? ProductionAnalyzeDate { get; set; }
 
     public virtual ClientFile? ClientFile { get; set; }
+
+    public virtual ICollection<Team> Teams { get; set; } = new List<Team>();
 }

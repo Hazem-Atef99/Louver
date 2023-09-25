@@ -11,5 +11,11 @@ public partial class Team
 
     public string? TeamType { get; set; }
 
+    public int? ClientFileId { get; set; }
+
+    public virtual ClientFile? ClientFile { get; set; }
+
+    public virtual ClientFileRelatedDate? ClientFileNavigation { get; set; }
+
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

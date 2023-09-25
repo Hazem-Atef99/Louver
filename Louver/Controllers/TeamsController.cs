@@ -28,7 +28,13 @@ namespace Louver.Controllers
           {
               return NotFound(new {message="No Data Found",code=404});
           }
-          var teams = await _context.Teams.Include(t=>t.Users).ToListAsync();
+          var teams = await _context.Teams.Include(t => t.Users).Include(t => t.ClientFile).Select(t => new{
+          TeamId=t.Id,
+          TeamName=t.TeamName,
+          TeamType=t.TeamType,
+          User=t.Users,
+          ClientFileRelatedDates=t.ClientFileNavigation
+          }).ToListAsync();
           var count = teams.Count();
 
             return Ok(new { data = teams, count = count, code = 200 });
@@ -50,6 +56,27 @@ namespace Louver.Controllers
             }
 
             return Ok(new { data = team, code = 200 });
+        }
+        [HttpPut("AddToClientFile")]
+        public async Task<IActionResult> addUserToTeam( int id, int clienFileId)
+        {
+            //if (!GetUser(userId))
+            //{
+            //    return BadRequest(new { message = "you are not authorized", code = 400 });
+            //}
+            var team = await GetById(id);
+            team.ClientFileId= clienFileId;
+             _context.Update(team);
+            try
+            {
+                 _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+            return Ok();
         }
 
         // PUT: api/Teams/5
@@ -121,6 +148,10 @@ namespace Louver.Controllers
         private bool TeamExists(int id)
         {
             return (_context.Teams?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+        private Task<Team> GetById(int id)
+        {
+            return _context.Teams.FirstOrDefaultAsync(m => m.Id == id);
         }
     }
 }

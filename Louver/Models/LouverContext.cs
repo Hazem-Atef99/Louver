@@ -135,7 +135,7 @@ public partial class LouverContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=tcp:194.163.132.242\\SQLEXPRESS,56773;Database=Louver;User ID= kitchen1;Password= kitchen1;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Data Source=tcp:194.163.132.242\\\\\\\\SQLEXPRESS,56773; Initial Catalog=Louver;User ID=kitchen1;Password=kitchen1;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -1836,6 +1836,14 @@ public partial class LouverContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("teamType");
+
+            entity.HasOne(d => d.ClientFile).WithMany(p => p.Teams)
+                .HasForeignKey(d => d.ClientFileId)
+                .HasConstraintName("FK_Teams_ClientFile");
+
+            entity.HasOne(d => d.ClientFileNavigation).WithMany(p => p.Teams)
+                .HasForeignKey(d => d.ClientFileId)
+                .HasConstraintName("FK_Teams_ClientFileRelatedDates");
         });
 
         modelBuilder.Entity<User>(entity =>
