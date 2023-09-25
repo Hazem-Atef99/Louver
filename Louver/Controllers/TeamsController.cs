@@ -76,7 +76,7 @@ namespace Louver.Controllers
                 return BadRequest(ex);
             }
 
-            return Ok();
+            return Ok(new {Message="Team Added"});
         }
 
         // PUT: api/Teams/5
