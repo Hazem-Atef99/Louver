@@ -19,7 +19,23 @@ public partial class ClientFileRelatedDate
 
     public DateTime? ProductionAnalyzeDate { get; set; }
 
+    public int? FormalId { get; set; }
+
+    public int? PaintFormalId { get; set; }
+
+    public int? OperatorFormalId { get; set; }
+
+    public int? PaintTeamId { get; set; }
+
+    public int? OperationTeamId { get; set; }
+
+    public int? AssempleTeamId { get; set; }
+
+    public virtual Team? AssempleTeam { get; set; }
+
     public virtual ClientFile? ClientFile { get; set; }
 
-    public virtual ICollection<Team> Teams { get; set; } = new List<Team>();
+    public virtual Team? OperationTeam { get; set; }
+
+    public virtual Team? PaintTeam { get; set; }
 }

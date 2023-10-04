@@ -133,9 +133,11 @@ public partial class LouverContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<UsersTeam> UsersTeams { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=tcp:194.163.132.242\\\\\\\\SQLEXPRESS,56773; Initial Catalog=Louver;User ID=kitchen1;Password=kitchen1;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Data Source=tcp:194.163.132.242\\SQLEXPRESS,56773;Initial Catalog=Louver;User ID= kitchen1;Password= kitchen1;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -955,12 +957,30 @@ public partial class LouverContext : DbContext
             entity.Property(e => e.ClientFileId)
                 .ValueGeneratedNever()
                 .HasColumnName("ClientFileID");
+            entity.Property(e => e.AssempleTeamId).HasColumnName("assempleTeamId");
             entity.Property(e => e.FinishDate).HasColumnType("date");
+            entity.Property(e => e.FormalId).HasColumnName("FormalID");
+            entity.Property(e => e.OperationTeamId).HasColumnName("operationTeamId");
+            entity.Property(e => e.OperatorFormalId).HasColumnName("operatorFormalId");
+            entity.Property(e => e.PaintFormalId).HasColumnName("paintFormalId");
+            entity.Property(e => e.PaintTeamId).HasColumnName("paintTeamId");
             entity.Property(e => e.ProductionAnalyzeDate).HasColumnType("date");
             entity.Property(e => e.ProductionEndDate).HasColumnType("date");
             entity.Property(e => e.ProductiorStartDate).HasColumnType("date");
             entity.Property(e => e.StartDate).HasColumnType("date");
             entity.Property(e => e.StartPaintDate).HasColumnType("date");
+
+            entity.HasOne(d => d.AssempleTeam).WithMany(p => p.ClientFileRelatedDateAssempleTeams)
+                .HasForeignKey(d => d.AssempleTeamId)
+                .HasConstraintName("FK_ClientFileRelatedDates_Teams2");
+
+            entity.HasOne(d => d.OperationTeam).WithMany(p => p.ClientFileRelatedDateOperationTeams)
+                .HasForeignKey(d => d.OperationTeamId)
+                .HasConstraintName("FK_ClientFileRelatedDates_Teams1");
+
+            entity.HasOne(d => d.PaintTeam).WithMany(p => p.ClientFileRelatedDatePaintTeams)
+                .HasForeignKey(d => d.PaintTeamId)
+                .HasConstraintName("FK_ClientFileRelatedDates_Teams");
         });
 
         modelBuilder.Entity<ClientFileStatus>(entity =>
@@ -1840,10 +1860,6 @@ public partial class LouverContext : DbContext
             entity.HasOne(d => d.ClientFile).WithMany(p => p.Teams)
                 .HasForeignKey(d => d.ClientFileId)
                 .HasConstraintName("FK_Teams_ClientFile");
-
-            entity.HasOne(d => d.ClientFileNavigation).WithMany(p => p.Teams)
-                .HasForeignKey(d => d.ClientFileId)
-                .HasConstraintName("FK_Teams_ClientFileRelatedDates");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -1868,10 +1884,21 @@ public partial class LouverContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.UserTypeId).HasColumnName("UserTypeID");
+        });
 
-            entity.HasOne(d => d.Team).WithMany(p => p.Users)
+        modelBuilder.Entity<UsersTeam>(entity =>
+        {
+            entity.ToTable("Users_Teams");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+
+            entity.HasOne(d => d.Team).WithMany(p => p.UsersTeams)
                 .HasForeignKey(d => d.TeamId)
-                .HasConstraintName("FK_Users_Teams");
+                .HasConstraintName("FK_Users_Teams_Teams");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UsersTeams)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Users_Teams_Users");
         });
 
         OnModelCreatingPartial(modelBuilder);

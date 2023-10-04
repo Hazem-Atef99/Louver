@@ -21,16 +21,15 @@ namespace Louver.Controllers
     public class ClientFilesController : ControllerBase   
     {
         private readonly LouverContext _context;
-        private readonly MasterContext masterContext;
+       
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public ClientFilesController(LouverContext context,MasterContext context1 , IConfiguration configuration , IMapper mapper = null)
+        public ClientFilesController(LouverContext context, IConfiguration configuration , IMapper mapper = null)
         {
             _context = context;
             _configuration = configuration;
             _mapper = mapper;
-            masterContext = context1;
         }
 
         // GET: api/ClientFiles

@@ -22,8 +22,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<LouverContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("dbconn")));
-builder.Services.AddDbContext<MasterContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("dbconn")));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(Program));
 

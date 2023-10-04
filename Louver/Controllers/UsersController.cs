@@ -168,24 +168,33 @@ namespace Louver.Controllers
         //    return Ok(new { Message = " User Added Successfully", Code = 200 });
         //}
         [HttpPut]
-        public async Task<IActionResult> addUserToTeam (int userId, list<int> id,int teamId)
+        public async Task<IActionResult> addUserToTeam ([FromBody]addUserToTeam userToTeam)
         {
-            if (!GetUser(userId))
+            if (!GetUser(userToTeam.userId))
             {
                 return BadRequest(new { message = "you are not authorized", code = 400 });
             }
-            var user= await GetById(id);
-            user.TeamId = teamId;
-            _context.Update(user);
-            try
+            for (int i=0;i<userToTeam.ids.Count;i++)
             {
-                _context.SaveChanges();
+                var user = await GetById(userToTeam.ids[i]);
+                user.TeamId = userToTeam.teamId;
+                UsersTeam usersTeam = new UsersTeam();
+                usersTeam.UserId = userToTeam.ids[i];
+                usersTeam.TeamId= userToTeam.teamId;
+                _context.UsersTeams.Add(usersTeam);
+                _context.Update(user);
+                try
+                {
+                    _context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new {Message=$"User With This {userToTeam.ids[i]} Couldn't Added",Error=ex});
+                }
             }
-            catch (Exception ex) {
-                return BadRequest(ex);
-            }
+       
            
-            return Ok(new {Message ="User Added To Team"});
+            return Ok(new {Message ="Users Added To Team"});
         }
         private Task<User> GetById(int id)
         {

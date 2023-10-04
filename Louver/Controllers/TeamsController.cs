@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Louver.Models;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Louver.Controllers
 {
@@ -28,12 +29,12 @@ namespace Louver.Controllers
           {
               return NotFound(new {message="No Data Found",code=404});
           }
-          var teams = await _context.Teams.Include(t => t.Users).Include(t => t.ClientFile).Select(t => new{
+          var teams = await _context.Teams.Include(t => t.UsersTeams).Include(t => t.ClientFile).Select(t => new{
           TeamId=t.Id,
           TeamName=t.TeamName,
           TeamType=t.TeamType,
-          User=t.Users,
-          ClientFileRelatedDates=t.ClientFileNavigation
+          User=t.UsersTeams,
+         
           }).ToListAsync();
           var count = teams.Count();
 
@@ -46,13 +47,15 @@ namespace Louver.Controllers
             {
                 return NotFound(new { message = "No Data Found", code = 404 });
             }
-            var teams = await _context.Teams.Include(t => t.Users).Include(t => t.ClientFile).Where(t=>t.TeamType=="painting").Select(t => new {
+
+            var teams = await _context.Teams.Include(t => t.UsersTeams).ThenInclude(UT => UT.User).Include(t => t.ClientFile).Where(t => t.TeamType == "painting").Select(t => new {
                 TeamId = t.Id,
                 TeamName = t.TeamName,
                 TeamType = t.TeamType,
-                User = t.Users,
-                ClientFileRelatedDates = t.ClientFileNavigation
-            }).ToListAsync();
+                User = t.UsersTeams.Select(U=>U.User).ToList(),
+                
+               
+        }).ToListAsync();
             var count = teams.Count();
             if (count == 0)
             {
@@ -67,12 +70,11 @@ namespace Louver.Controllers
             {
                 return NotFound(new { message = "No Data Found", code = 404 });
             }
-            var teams = await _context.Teams.Include(t => t.Users).Include(t => t.ClientFile).Where(t => t.TeamType == "operation").Select(t => new {
+            var teams = await _context.Teams.Include(t => t.UsersTeams).ThenInclude(UT => UT.User).Include(t => t.ClientFile).Where(t => t.TeamType == "operation").Select(t => new {
                 TeamId = t.Id,
                 TeamName = t.TeamName,
                 TeamType = t.TeamType,
-                User = t.Users,
-                ClientFileRelatedDates = t.ClientFileNavigation
+                User = t.UsersTeams.Select(U => U.User).ToList(),
             }).ToListAsync();
             var count = teams.Count();
             if (count == 0)
@@ -88,12 +90,11 @@ namespace Louver.Controllers
             {
                 return NotFound(new { message = "No Data Found", code = 404 });
             }
-            var teams = await _context.Teams.Include(t => t.Users).Include(t => t.ClientFile).Where(t => t.TeamType == "assemple").Select(t => new {
+            var teams = await _context.Teams.Include(t => t.UsersTeams).ThenInclude(UT=>UT.User).Include(t => t.ClientFile).Where(t => t.TeamType == "assemple").Select(t => new {
                 TeamId = t.Id,
                 TeamName = t.TeamName,
                 TeamType = t.TeamType,
-                User = t.Users,
-                ClientFileRelatedDates = t.ClientFileNavigation
+                User = t.UsersTeams.Select(U => U.User).ToList(),
             }).ToListAsync();
             var count = teams.Count();
             if (count == 0)
@@ -201,7 +202,7 @@ namespace Louver.Controllers
             {
                 return BadRequest(new { Message = "error", code = 400 });
             }
-            var team = await _context.Teams.FindAsync(id);
+            var team = await _context.Teams.Include(t=>t.UsersTeams).FirstOrDefaultAsync(t=>t.Id==id);
             if (team == null)
             {
                 return BadRequest(new { Message = "error", code = 400 });

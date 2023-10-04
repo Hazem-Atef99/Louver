@@ -27,5 +27,5 @@ public partial class User
 
     public int? TeamId { get; set; }
 
-    public virtual Team? Team { get; set; }
+    public virtual ICollection<UsersTeam> UsersTeams { get; set; } = new List<UsersTeam>();
 }
