@@ -15,9 +15,9 @@ namespace Louver.Controllers
     [ApiController]
     public class StatusController : ControllerBase
     {
-        private readonly LouverContext _context;
+        private readonly Kitchen4Context _context;
         private readonly IMapper _mapper;
-        public StatusController(LouverContext context, IMapper mapper = null)
+        public StatusController(Kitchen4Context context, IMapper mapper = null)
         {
             _context = context;
             _mapper = mapper;

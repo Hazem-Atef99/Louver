@@ -17,9 +17,9 @@ namespace Louver.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly LouverContext _context;
+        private readonly Kitchen4Context _context;
 
-        public UsersController(LouverContext context)
+        public UsersController(Kitchen4Context context)
         {
             _context = context;
         }

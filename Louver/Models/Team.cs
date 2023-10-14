@@ -15,11 +15,5 @@ public partial class Team
 
     public virtual ClientFile? ClientFile { get; set; }
 
-    public virtual ICollection<ClientFileRelatedDate> ClientFileRelatedDateAssempleTeams { get; set; } = new List<ClientFileRelatedDate>();
-
-    public virtual ICollection<ClientFileRelatedDate> ClientFileRelatedDateOperationTeams { get; set; } = new List<ClientFileRelatedDate>();
-
-    public virtual ICollection<ClientFileRelatedDate> ClientFileRelatedDatePaintTeams { get; set; } = new List<ClientFileRelatedDate>();
-
     public virtual ICollection<UsersTeam> UsersTeams { get; set; } = new List<UsersTeam>();
 }

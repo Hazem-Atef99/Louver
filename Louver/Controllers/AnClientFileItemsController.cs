@@ -16,9 +16,9 @@ namespace Louver.Controllers
     [ApiController]
     public class AnClientFileItemsController : ControllerBase
     {
-        private readonly LouverContext _context;
+        private readonly Kitchen4Context _context;
 
-        public AnClientFileItemsController(LouverContext context)
+        public AnClientFileItemsController(Kitchen4Context context)
         {
             _context = context;
         }

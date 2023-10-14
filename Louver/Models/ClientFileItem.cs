@@ -66,6 +66,4 @@ public partial class ClientFileItem
     public byte[]? Image { get; set; }
 
     public string? ItemName { get; set; }
-
-    public virtual ClientFile ClientFile { get; set; } = null!;
 }

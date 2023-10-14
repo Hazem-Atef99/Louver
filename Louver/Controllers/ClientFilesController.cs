@@ -20,12 +20,12 @@ namespace Louver.Controllers
     [ApiController]
     public class ClientFilesController : ControllerBase   
     {
-        private readonly LouverContext _context;
+        private readonly Kitchen4Context _context;
        
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public ClientFilesController(LouverContext context, IConfiguration configuration , IMapper mapper = null)
+        public ClientFilesController(Kitchen4Context context, IConfiguration configuration , IMapper mapper = null)
         {
             _context = context;
             _configuration = configuration;

@@ -31,11 +31,5 @@ public partial class ClientFileRelatedDate
 
     public int? AssempleTeamId { get; set; }
 
-    public virtual Team? AssempleTeam { get; set; }
-
     public virtual ClientFile? ClientFile { get; set; }
-
-    public virtual Team? OperationTeam { get; set; }
-
-    public virtual Team? PaintTeam { get; set; }
 }

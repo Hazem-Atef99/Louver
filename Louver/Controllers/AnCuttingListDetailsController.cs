@@ -21,12 +21,12 @@ namespace Louver.Controllers
     [ApiController]
     public class AnCuttingListDetailsController : ControllerBase
     {
-        private readonly LouverContext _context;
+        private readonly Kitchen4Context _context;
         private readonly IMapper _mapper;
 
 
 
-        public AnCuttingListDetailsController(LouverContext context , IMapper mapper)
+        public AnCuttingListDetailsController(Kitchen4Context context , IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

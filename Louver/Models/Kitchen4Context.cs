@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Louver.Models;
 
-public partial class LouverContext : DbContext
+public partial class Kitchen4Context : DbContext
 {
-    public LouverContext()
+    public Kitchen4Context()
     {
     }
 
-    public LouverContext(DbContextOptions<LouverContext> options)
+    public Kitchen4Context(DbContextOptions<Kitchen4Context> options)
         : base(options)
     {
     }
@@ -52,8 +52,6 @@ public partial class LouverContext : DbContext
     public virtual DbSet<ClientFilePayment> ClientFilePayments { get; set; }
 
     public virtual DbSet<ClientFileProperty> ClientFileProperties { get; set; }
-
-    public virtual DbSet<ClientFileProperty1> ClientFileProperties1 { get; set; }
 
     public virtual DbSet<ClientFileRelatedDate> ClientFileRelatedDates { get; set; }
 
@@ -137,11 +135,11 @@ public partial class LouverContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=tcp:194.163.132.242\\SQLEXPRESS,56773;Initial Catalog=Louver;User ID= kitchen1;Password= kitchen1;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Data Source=194.163.132.242\\\\\\\\SQLEXPRESS,50069;Initial Catalog=kitchen4;User ID= kitchen1;Password= kit123;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.UseCollation("Arabic_CI_AS");
+        modelBuilder.UseCollation("Arabic_100_CI_AS");
 
         modelBuilder.Entity<AnCategory>(entity =>
         {
@@ -165,7 +163,7 @@ public partial class LouverContext : DbContext
 
         modelBuilder.Entity<AnClientFileDetail>(entity =>
         {
-            entity.HasKey(e => e.DetailId).HasName("PK__AN_Clien__135C314DA845EAC6");
+            entity.HasKey(e => e.DetailId).HasName("PK__AN_Clien__135C314D9E08741E");
 
             entity.ToTable("AN_ClientFileDetail");
 
@@ -197,7 +195,7 @@ public partial class LouverContext : DbContext
 
         modelBuilder.Entity<AnClientFileItem>(entity =>
         {
-            entity.HasKey(e => e.ClientFileitemId).HasName("PK__AN_Clien__92F51EADAFFAAC1C");
+            entity.HasKey(e => e.ClientFileitemId).HasName("PK__AN_Clien__92F51EADDC9B5257");
 
             entity.ToTable("AN_ClientFileItem");
 
@@ -239,7 +237,7 @@ public partial class LouverContext : DbContext
 
         modelBuilder.Entity<AnCuttingListCatgeory>(entity =>
         {
-            entity.HasKey(e => e.CuttingListCatgeoryId).HasName("PK__AN_Cutti__1814C71B9C7CDFF8");
+            entity.HasKey(e => e.CuttingListCatgeoryId).HasName("PK__AN_Cutti__1814C71B2771F64C");
 
             entity.ToTable("AN_CuttingListCatgeory");
 
@@ -298,7 +296,7 @@ public partial class LouverContext : DbContext
 
         modelBuilder.Entity<AnHandType>(entity =>
         {
-            entity.HasKey(e => e.HandTypeId).HasName("PK__AN_HandT__3F15E4D4005E487A");
+            entity.HasKey(e => e.HandTypeId).HasName("PK__AN_HandT__3F15E4D464266234");
 
             entity.ToTable("AN_HandType");
 
@@ -343,7 +341,7 @@ public partial class LouverContext : DbContext
 
         modelBuilder.Entity<Client>(entity =>
         {
-            entity.HasKey(e => e.ClientId).HasName("PK__CLIENTS__E67E1A04EBD6B904");
+            entity.HasKey(e => e.ClientId).HasName("PK__CLIENTS__E67E1A044340081D");
 
             entity.ToTable("CLIENTS");
 
@@ -655,11 +653,6 @@ public partial class LouverContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("NOTES");
             entity.Property(e => e.Width).HasColumnType("decimal(10, 2)");
-
-            entity.HasOne(d => d.ClientFile).WithMany(p => p.ClientFileItems)
-                .HasForeignKey(d => d.ClientFileId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ClientFileItem_ClientFile");
         });
 
         modelBuilder.Entity<ClientFileItem20210702>(entity =>
@@ -695,8 +688,6 @@ public partial class LouverContext : DbContext
             entity
                 .HasNoKey()
                 .ToTable("ClientFileLog");
-
-            entity.HasIndex(e => e.ClientFileId, "ix_ClientFileLog");
 
             entity.Property(e => e.ClientFileId).HasColumnName("ClientFileID");
             entity.Property(e => e.CreationDate).HasColumnType("datetime");
@@ -762,194 +753,6 @@ public partial class LouverContext : DbContext
                 .HasConstraintName("FK_CLientFileProperties_ClientFile");
         });
 
-        modelBuilder.Entity<ClientFileProperty1>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("ClientFileProperty");
-
-            entity.Property(e => e.AccessoriesDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.AllAccessoriesDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.AnticDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.AnticId).HasColumnName("AnticID");
-            entity.Property(e => e.BanelCount).HasColumnType("decimal(18, 3)");
-            entity.Property(e => e.BanelDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.BanelId).HasColumnName("BanelID");
-            entity.Property(e => e.BanelPrice).HasColumnType("decimal(38, 8)");
-            entity.Property(e => e.BankDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.BatteryDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.BatteryId).HasColumnName("BatteryID");
-            entity.Property(e => e.CarcaseTypeNoteDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.CladdingDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.CladdingId).HasColumnName("CladdingID");
-            entity.Property(e => e.ClientFileId).HasColumnName("ClientFileID");
-            entity.Property(e => e.ClientId).HasColumnName("ClientID");
-            entity.Property(e => e.Color2Desc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.ColumnTableCount).HasColumnType("decimal(18, 3)");
-            entity.Property(e => e.ColumnTableDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.ColumnTableId).HasColumnName("ColumnTableID");
-            entity.Property(e => e.CovingDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.CovingId).HasColumnName("CovingID");
-            entity.Property(e => e.CurrentLightPrice).HasColumnType("decimal(38, 8)");
-            entity.Property(e => e.DevicesDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.FasalatTypeDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.FasalatTypeId).HasColumnName("FasalatTypeID");
-            entity.Property(e => e.FileTypeId).HasColumnName("FileTypeID");
-            entity.Property(e => e.FittingDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.FrontDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.FrontTypeNoteDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.GlassTypeDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.GlassTypeId).HasColumnName("GlassTypeID");
-            entity.Property(e => e.HandCount).HasColumnType("decimal(18, 3)");
-            entity.Property(e => e.HandModelDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.HandModelId).HasColumnName("HandModelID");
-            entity.Property(e => e.HandPrice)
-                .HasColumnType("decimal(38, 8)")
-                .HasColumnName("handPrice");
-            entity.Property(e => e.HeightDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.HoleCount).HasColumnType("decimal(18, 3)");
-            entity.Property(e => e.HoleDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.IncreaseTopPrice).HasColumnType("decimal(38, 8)");
-            entity.Property(e => e.IslandTopCount).HasColumnType("decimal(18, 3)");
-            entity.Property(e => e.IslandTopDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.IslandTopId).HasColumnName("IslandTopID");
-            entity.Property(e => e.ItemTypeDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.KarcasDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.KitchenHeight).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.KitchenHeightNoteDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.KitchenTypeDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.KitchenTypeId).HasColumnName("KitchenTypeID");
-            entity.Property(e => e.KitchenWidth).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.LightDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.MainColorDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.MainColorId).HasColumnName("MainColorID");
-            entity.Property(e => e.MajlaDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.MajlaHoleDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.MajlaHoleId).HasColumnName("MajlaHoleID");
-            entity.Property(e => e.MajlaId).HasColumnName("MajlaID");
-            entity.Property(e => e.MajlahHolePrice).HasColumnType("decimal(38, 8)");
-            entity.Property(e => e.MajlahPrice).HasColumnType("decimal(38, 8)");
-            entity.Property(e => e.ModelDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.PatternTypeDesc)
-                .HasMaxLength(8)
-                .IsUnicode(false);
-            entity.Property(e => e.SecondaryColorDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.SecondaryColorId).HasColumnName("SecondaryColorID");
-            entity.Property(e => e.ServiceDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.ServicePrice).HasColumnType("decimal(38, 8)");
-            entity.Property(e => e.SideTopCount).HasColumnType("decimal(18, 3)");
-            entity.Property(e => e.SideTopDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.SideTopId).HasColumnName("SideTopID");
-            entity.Property(e => e.SplashCount).HasColumnType("decimal(18, 3)");
-            entity.Property(e => e.SplashDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.SplashId).HasColumnName("SplashID");
-            entity.Property(e => e.StripDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.SubColorDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.SubColorId).HasColumnName("SubColorID");
-            entity.Property(e => e.SuctionDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.SuctionPrice).HasColumnType("decimal(38, 8)");
-            entity.Property(e => e.TableTopCount).HasColumnType("decimal(18, 3)");
-            entity.Property(e => e.TableTopDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.TableTopId).HasColumnName("TableTopID");
-            entity.Property(e => e.TapPrice).HasColumnType("decimal(38, 8)");
-            entity.Property(e => e.Tasfee7Wood).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.TextureDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.TextureId).HasColumnName("TextureID");
-            entity.Property(e => e.TheTop).HasColumnName("THeTop");
-            entity.Property(e => e.TheTopDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false)
-                .HasColumnName("THeTopDesc");
-            entity.Property(e => e.TopCount).HasColumnType("decimal(18, 3)");
-            entity.Property(e => e.TopInWallPrice).HasColumnType("decimal(38, 8)");
-            entity.Property(e => e.VisibleColor)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.WallTopCount).HasColumnType("decimal(18, 3)");
-            entity.Property(e => e.WallTopDesc)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.WallTopId).HasColumnName("WallTopID");
-        });
-
         modelBuilder.Entity<ClientFileRelatedDate>(entity =>
         {
             entity.HasKey(e => e.ClientFileId);
@@ -969,18 +772,6 @@ public partial class LouverContext : DbContext
             entity.Property(e => e.ProductiorStartDate).HasColumnType("date");
             entity.Property(e => e.StartDate).HasColumnType("date");
             entity.Property(e => e.StartPaintDate).HasColumnType("date");
-
-            entity.HasOne(d => d.AssempleTeam).WithMany(p => p.ClientFileRelatedDateAssempleTeams)
-                .HasForeignKey(d => d.AssempleTeamId)
-                .HasConstraintName("FK_ClientFileRelatedDates_Teams2");
-
-            entity.HasOne(d => d.OperationTeam).WithMany(p => p.ClientFileRelatedDateOperationTeams)
-                .HasForeignKey(d => d.OperationTeamId)
-                .HasConstraintName("FK_ClientFileRelatedDates_Teams1");
-
-            entity.HasOne(d => d.PaintTeam).WithMany(p => p.ClientFileRelatedDatePaintTeams)
-                .HasForeignKey(d => d.PaintTeamId)
-                .HasConstraintName("FK_ClientFileRelatedDates_Teams");
         });
 
         modelBuilder.Entity<ClientFileStatus>(entity =>
@@ -1100,7 +891,7 @@ public partial class LouverContext : DbContext
 
         modelBuilder.Entity<ClientPayment>(entity =>
         {
-            entity.HasKey(e => e.PaymentId).HasName("PK__ClientPa__9B556A587C82F1C5");
+            entity.HasKey(e => e.PaymentId).HasName("PK__ClientPa__9B556A5829DBB7D4");
 
             entity.ToTable("ClientPayment");
 
@@ -1214,7 +1005,7 @@ public partial class LouverContext : DbContext
 
         modelBuilder.Entity<ClientSurvey>(entity =>
         {
-            entity.HasKey(e => e.ClientSurveyId).HasName("PK__ClientSu__88BE9D53ECDFD072");
+            entity.HasKey(e => e.ClientSurveyId).HasName("PK__ClientSu__88BE9D53E1EDB16D");
 
             entity.ToTable("ClientSurvey");
 
@@ -1526,7 +1317,7 @@ public partial class LouverContext : DbContext
 
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E3293C0610D");
+            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E32A71B8400");
 
             entity.Property(e => e.NotificationId)
                 .ValueGeneratedNever()
@@ -1538,7 +1329,7 @@ public partial class LouverContext : DbContext
 
         modelBuilder.Entity<Project>(entity =>
         {
-            entity.HasKey(e => e.ProjectId).HasName("PK__Projects__761ABED04E3EF124");
+            entity.HasKey(e => e.ProjectId).HasName("PK__Projects__761ABED0D4EBECC2");
 
             entity.Property(e => e.ProjectId)
                 .ValueGeneratedNever()
@@ -1575,7 +1366,7 @@ public partial class LouverContext : DbContext
 
         modelBuilder.Entity<Question>(entity =>
         {
-            entity.HasKey(e => e.QuestionId).HasName("PK__Question__0DC06F8CFBED08A8");
+            entity.HasKey(e => e.QuestionId).HasName("PK__Question__0DC06F8CD9583713");
 
             entity.ToTable("Question");
 
@@ -1603,7 +1394,7 @@ public partial class LouverContext : DbContext
 
         modelBuilder.Entity<Reminder>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Reminder__3214EC27F2E91B85");
+            entity.HasKey(e => e.Id).HasName("PK__Reminder__3214EC27475D265B");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreationDate).HasColumnType("datetime");

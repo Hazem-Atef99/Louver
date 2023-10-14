@@ -20,7 +20,7 @@ builder.Services.AddCors(options =>
                                     .AllowAnyMethod());
 });
 
-builder.Services.AddDbContext<LouverContext>(options =>
+builder.Services.AddDbContext<Kitchen4Context>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("dbconn")));
 
 builder.Services.AddEndpointsApiExplorer();

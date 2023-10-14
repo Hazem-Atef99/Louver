@@ -13,9 +13,9 @@ namespace Louver.Controllers
     [ApiController]
     public class AnCuttingListCatgeoriesController : ControllerBase
     {
-        private readonly LouverContext _context;
+        private readonly Kitchen4Context _context;
 
-        public AnCuttingListCatgeoriesController(LouverContext context)
+        public AnCuttingListCatgeoriesController(Kitchen4Context context)
         {
             _context = context;
         }

@@ -14,9 +14,9 @@ namespace Louver.Controllers
     [ApiController]
     public class TeamsController : ControllerBase
     {
-        private readonly LouverContext _context;
+        private readonly Kitchen4Context _context;
 
-        public TeamsController(LouverContext context)
+        public TeamsController(Kitchen4Context context)
         {
             _context = context;
         }

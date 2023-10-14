@@ -157,8 +157,6 @@ public partial class ClientFile
 
     public virtual ICollection<ClientFileFollow> ClientFileFollows { get; set; } = new List<ClientFileFollow>();
 
-    public virtual ICollection<ClientFileItem> ClientFileItems { get; set; } = new List<ClientFileItem>();
-
     public virtual ClientFileRelatedDate ClientFileNavigation { get; set; } = null!;
 
     public virtual ICollection<ClientFileProperty> ClientFileProperties { get; set; } = new List<ClientFileProperty>();
