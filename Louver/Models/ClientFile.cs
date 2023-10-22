@@ -161,7 +161,7 @@ public partial class ClientFile
 
     public virtual ICollection<ClientFileProperty> ClientFileProperties { get; set; } = new List<ClientFileProperty>();
 
-    public virtual ICollection<ClientSurvey> ClientSurveys { get; set; } = new List<ClientSurvey>();
+    public virtual ICollection<ClientFileTeam> ClientFileTeams { get; set; } = new List<ClientFileTeam>();
 
-    public virtual ICollection<Team> Teams { get; set; } = new List<Team>();
+    public virtual ICollection<ClientSurvey> ClientSurveys { get; set; } = new List<ClientSurvey>();
 }

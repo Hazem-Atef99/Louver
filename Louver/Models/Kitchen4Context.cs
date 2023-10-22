@@ -59,6 +59,8 @@ public partial class Kitchen4Context : DbContext
 
     public virtual DbSet<ClientFileTawseel> ClientFileTawseels { get; set; }
 
+    public virtual DbSet<ClientFileTeam> ClientFileTeams { get; set; }
+
     public virtual DbSet<ClientFileTop> ClientFileTops { get; set; }
 
     public virtual DbSet<ClientFileTopDevice> ClientFileTopDevices { get; set; }
@@ -135,7 +137,7 @@ public partial class Kitchen4Context : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=194.163.132.242\\\\\\\\SQLEXPRESS,50069;Initial Catalog=kitchen4;User ID= kitchen1;Password= kit123;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Data Source=194.163.132.242\\\\\\\\\\\\\\\\SQLEXPRESS,50069;Initial Catalog=kitchen4;User ID=kitchen1;Password=kit123;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -808,6 +810,22 @@ public partial class Kitchen4Context : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.TarkeebDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<ClientFileTeam>(entity =>
+        {
+            entity.ToTable("ClientFile-Teams");
+
+            entity.Property(e => e.ClientFileId).HasColumnName("clientFileID");
+            entity.Property(e => e.TeamId).HasColumnName("TeamID");
+
+            entity.HasOne(d => d.ClientFile).WithMany(p => p.ClientFileTeams)
+                .HasForeignKey(d => d.ClientFileId)
+                .HasConstraintName("FK_ClientFile-Teams_ClientFile");
+
+            entity.HasOne(d => d.Team).WithMany(p => p.ClientFileTeams)
+                .HasForeignKey(d => d.TeamId)
+                .HasConstraintName("FK_ClientFile-Teams_Teams");
         });
 
         modelBuilder.Entity<ClientFileTop>(entity =>
@@ -1639,6 +1657,7 @@ public partial class Kitchen4Context : DbContext
         modelBuilder.Entity<Team>(entity =>
         {
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ClientFileId).HasColumnName("clientFileId");
             entity.Property(e => e.TeamName)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -1647,10 +1666,6 @@ public partial class Kitchen4Context : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("teamType");
-
-            entity.HasOne(d => d.ClientFile).WithMany(p => p.Teams)
-                .HasForeignKey(d => d.ClientFileId)
-                .HasConstraintName("FK_Teams_ClientFile");
         });
 
         modelBuilder.Entity<User>(entity =>

@@ -13,7 +13,7 @@ public partial class Team
 
     public int? ClientFileId { get; set; }
 
-    public virtual ClientFile? ClientFile { get; set; }
+    public virtual ICollection<ClientFileTeam> ClientFileTeams { get; set; } = new List<ClientFileTeam>();
 
     public virtual ICollection<UsersTeam> UsersTeams { get; set; } = new List<UsersTeam>();
 }

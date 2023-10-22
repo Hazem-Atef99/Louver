@@ -167,7 +167,7 @@ namespace Louver.Controllers
         //    _context.SaveChanges();
         //    return Ok(new { Message = " User Added Successfully", Code = 200 });
         //}
-        [HttpPut]
+        [HttpPut("addUserToTeam")]
         public async Task<IActionResult> addUserToTeam ([FromBody]addUserToTeam userToTeam)
         {
             if (!GetUser(userToTeam.userId))
