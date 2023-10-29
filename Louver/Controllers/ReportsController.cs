@@ -108,11 +108,16 @@ namespace Louver.Controllers
             {
                 connection.Close();
             }
+            if (dataCount==0)
+            {
+                return NotFound(new { message = "no reports found", code = 404 });
+            }
             return Ok(new
             {
                 data = Report1,
                 massage = "Success",
-                count = dataCount
+                count = dataCount,
+                code=200
             }) ;
         }
         [HttpGet("getClientReport2")]
