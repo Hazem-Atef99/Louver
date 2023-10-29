@@ -123,25 +123,158 @@ namespace Louver.Controllers
         [HttpGet("getClientReport2")]
         public IActionResult getClientReport2(int clientFileID)
         {
-            var sqlString = $"AN_GetClientReport2{clientFileID}";
-            var Report = _context.Database.ExecuteSqlRaw(sqlString);
-            if (ReferenceEquals(Report, null))
+            string connectionString = "Data Source=194.163.132.242\\\\SQLEXPRESS,50069;Initial Catalog=kitchen4;User ID=kitchen1;Password=kit123;TrustServerCertificate=True;";
+            using SqlConnection connection = new SqlConnection(connectionString);
+            string x = "";
+            List<object> Report2 = new List<object>();
+            int dataCount = 0;
+            try
             {
-                return BadRequest(new { message = " no reports exist", code = 400 });
+                connection.Open();
+
+                using SqlCommand cmd = new SqlCommand("AN_GetClientReport2", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter("@pClientFileID", clientFileID));
+                using SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    // Access data using reader
+                    object report = new
+                    {
+                        ClientName = reader["ClientName"].ToString(),
+                        ClientNo = reader["ClientNo"].ToString(),
+                        KitchenTypeDesc = reader["KitchenTypeDesc"].ToString(),
+
+                        TypeWoodDesc = reader["TypeWoodDesc"].ToString(),
+                        Team1 = reader["Team1"].ToString(),
+                        team2 = reader["team2"].ToString(),
+                        teammembers = reader["teammembers"].ToString(),
+                        startDate = reader["startDate"].ToString(),
+                        finishdate = reader["finishdate"].ToString(),
+                        technical = reader["technical"].ToString(),
+                        delivery = reader["delivery"].ToString(),
+                        orderno = reader["orderno"].ToString(),
+                        //operator1 = reader["operator1"].ToString(),
+                        //size = reader["size"].ToString(),
+                        unitNo = reader["unitNo"].ToString(),
+                        unitdesc = reader["unitdesc"].ToString(),
+                        TypeID = reader["TypeID"].ToString(),
+                        QTY = reader["QTY"].ToString(),
+                        Length = reader["Length"].ToString(),
+                        Hieght = reader["Hieght"].ToString(),
+                        //Width = reader["Width"].ToString(),
+                        GrainDesc = reader["GrainDesc"].ToString(),
+                        notes = reader["notes"].ToString(),
+                        colorcode = reader["colorcode"].ToString(),
+                        categorycode = reader["categorycode"].ToString(),
+                        CategoryCodeEn = reader["CategoryCodeEn"].ToString(),
+                        PaintTeam = reader["PaintTeam"].ToString(),
+                        operatorteam = reader["operatorteam"].ToString(),
+                        sub1 = reader["sub1"].ToString(),
+                        sub2 = reader["sub2"].ToString(),
+                        maincolor = reader["maincolor"].ToString(),
+                        PrintDate = reader["PrintDate"].ToString(),
+                       // UnitColorCode = reader["UnitColorCode"].ToString(),
+
+                        //carcasdesc = reader["carcasdesc"].ToString()
+                    };
+
+
+                    Report2.Add(report);
+                    dataCount = Report2.Count();
+                }
             }
-            return Ok(new { data = Report, code = 200, message = "Success" });
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            if (dataCount == 0)
+            {
+                return NotFound(new { message = "no reports found", code = 404 });
+            }
+            return Ok(new
+            {
+                data = Report2,
+                massage = "Success",
+                count = dataCount,
+                code = 200
+            });
         }
         [HttpGet("getClientReport3")]
         public IActionResult getClientReport3(int clientFileID)
         {
-            string typeID = "1,2";
-            var sqlString = $"AN_GetClientReport3{clientFileID},{typeID}";
-            var Report = _context.Database.ExecuteSqlRaw(sqlString);
-            if (ReferenceEquals(Report, null))
+            string connectionString = "Data Source=194.163.132.242\\\\SQLEXPRESS,50069;Initial Catalog=kitchen4;User ID=kitchen1;Password=kit123;TrustServerCertificate=True;";
+            using SqlConnection connection = new SqlConnection(connectionString);
+            string x = "";
+            List<object> Report1 = new List<object>();
+            int dataCount = 0;
+            try
             {
-                return BadRequest(new { message = " no reports exist", code = 400 });
+                connection.Open();
+
+                using SqlCommand cmd = new SqlCommand("AN_GetClientReport3", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter("@pClientFileID", clientFileID));
+                using SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    // Access data using reader
+                    object report = new
+                    {
+                        ClientName = reader["ClientName"].ToString(),
+                        ClientNo = reader["ClientNo"].ToString(),
+                        KitchenTypeDesc = reader["KitchenTypeDesc"].ToString(),
+
+                       // TypeWoodDesc = reader["TypeWoodDesc"].ToString(),
+                        Team1 = reader["Team1"].ToString(),
+                        team2 = reader["team2"].ToString(),
+                        //teammembers = reader["teammembers"].ToString(),
+                        startDate = reader["startDate"].ToString(),
+                        finishdate = reader["finishdate"].ToString(),
+                        technical = reader["tecknichal"].ToString(),
+                        delivery = reader["delivery"].ToString(),
+                        orderno = reader["orderno"].ToString(),
+                        operator1 = reader["operator"].ToString(),
+                        TypeDesc = reader["TypeDesc"].ToString(),
+                        MaterialDesc = reader["MaterialDesc"].ToString(),
+                        // unitdesc = reader["unitdesc"].ToString(),
+                        thickness = reader["thickness"].ToString(),
+                        size = reader["size"].ToString(),
+                        QTY = reader["QTY"].ToString(),
+                        notes = reader["notes"].ToString(),
+                        colorcode = reader["colorcode"].ToString(),
+                        categorycode = reader["categorycode"].ToString(),
+                       
+                    };
+
+
+                    Report1.Add(report);
+                    dataCount = Report1.Count();
+                }
             }
-            return Ok(new { data = Report, code = 200, message = "Success" });
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            if (dataCount == 0)
+            {
+                return NotFound(new { message = "no reports found", code = 404 });
+            }
+            return Ok(new
+            {
+                data = Report1,
+                massage = "Success",
+                count = dataCount,
+                code = 200
+            });
         }
     }
 }
