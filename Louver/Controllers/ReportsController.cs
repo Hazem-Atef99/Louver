@@ -97,7 +97,7 @@ namespace Louver.Controllers
                    
                     
                     Report1.Add(report);
-                    dataCount = Report1.Count;
+                    dataCount = Report1.Count();
                 }
             }
             catch (Exception ex)
