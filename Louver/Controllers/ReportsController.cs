@@ -42,6 +42,7 @@ namespace Louver.Controllers
             using SqlConnection connection = new SqlConnection(connectionString);
             string x = "";
                 List<object> Report1= new List<object>();
+            int dataCount = 0;
             try
             {
                 connection.Open();
@@ -96,6 +97,7 @@ namespace Louver.Controllers
                    
                     
                     Report1.Add(report);
+                    dataCount = Report1.Count;
                 }
             }
             catch (Exception ex)
@@ -108,8 +110,10 @@ namespace Louver.Controllers
             }
             return Ok(new
             {
-                data=Report1
-            });
+                data = Report1,
+                massage = "Success",
+                count = dataCount
+            }) ;
         }
         [HttpGet("getClientReport2")]
         public IActionResult getClientReport2(int clientFileID)
