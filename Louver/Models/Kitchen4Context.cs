@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Louver.DataModel;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Louver.Models;
@@ -134,6 +136,12 @@ public partial class Kitchen4Context : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UsersTeam> UsersTeams { get; set; }
+    public virtual DbSet<Report1> Reports { get; set; }
+    public IQueryable<Report1> test(int x)
+    {
+        SqlParameter pid = new SqlParameter("@pClientFileID", x);
+        return this.Reports.FromSqlRaw<Report1>("EXECUTE AN_GetClientReport1 @pClientFileID",pid);
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
@@ -142,7 +150,7 @@ public partial class Kitchen4Context : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("Arabic_100_CI_AS");
-
+        modelBuilder.Entity<Report1>().HasNoKey();
         modelBuilder.Entity<AnCategory>(entity =>
         {
             entity.HasKey(e => e.CategoryId).HasName("PK__AN_Categ__19093A2B5C31EEB2");
