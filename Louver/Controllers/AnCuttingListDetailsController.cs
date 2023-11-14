@@ -139,21 +139,11 @@ namespace Louver.Controllers
 
             _context.Update(anCuttingListDetail);
 
-            try
-            {
+            
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AnCuttingListDetailExists(id))
-                {
-                    return BadRequest();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+
+           
 
             return Ok(new {message="cuttingListDetail Updated Successfully", code=200});
         }
@@ -178,14 +168,10 @@ namespace Louver.Controllers
             }
             catch (DbUpdateException)
             {
-                if (AnCuttingListDetailExists(anCuttingListDetail.CuttingListDetailId))
-                {
-                    return Conflict();
-                }
-                else
-                {
+              
+               
                     throw;
-                }
+                
             }
 
             return CreatedAtAction("GetAnCuttingListDetail", new { id = anCuttingListDetail.CuttingListDetailId }, anCuttingListDetail);

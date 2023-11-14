@@ -59,7 +59,7 @@ namespace Louver.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(anCuttingListCatgeory).State = EntityState.Modified;
+            _context.Update(anCuttingListCatgeory);
 
             try
             {

@@ -80,8 +80,12 @@ namespace Louver.Controllers
         public async Task<IActionResult> PutClientFile(int id,[FromBody] updateClientFile clientFile,int userId)
         {
            var clientfile= await GetById(id);
-            
-            if (!GetUser(userId) &&clientfile.FinalStatusId==1)
+
+            if (clientfile.FinalStatusId == 1)
+            {
+                return BadRequest(new { message = "you can't edit this item", code = 400 });
+            }
+            if (!GetUser(userId))
             {
                 return BadRequest(new { message = "you are not authorized to edit this item", code = 400 });
             }
@@ -94,19 +98,22 @@ namespace Louver.Controllers
                 return BadRequest($" No clientfile was found with this ID : {id} ");
 
             clientfile.TarkeebDate=clientFile.TarkeebDate;
-            clientfile.Modifiedby=clientfile.Modifiedby;
+            clientfile.Modifiedby=clientFile.ModifiedBy;
             clientfile.ModificationDate = DateTime.Now;
             _context.Update(clientfile);
             _context.SaveChanges();
 
-            return Ok(new { message = "updated successfully", data = clientfile, code = 200 });
+            return Ok(new { message = "updated successfully", code = 200 });
         }
         [HttpPut("editFinalStatus")]
         public async Task<IActionResult> editFinalStatus(int id , int FinalStatusId,int userId)
         {
             var clientfile = await GetById(id);
-
-            if (!GetUser(userId) && clientfile.FinalStatusId == 1)
+            if (clientfile.FinalStatusId==1)
+            {
+                return BadRequest(new { message = "you can't edit this item", code = 400 });
+            }
+            if (!GetUser(userId) )
             {
                 return BadRequest(new { message = "you are not authorized to edit this item", code = 400 });
             }
@@ -131,7 +138,11 @@ namespace Louver.Controllers
 
             var clientfile = await GetById(id);
 
-            if (!GetUser(userId) && clientfile.FinalStatusId == 1)
+            if (clientfile.FinalStatusId == 1)
+            {
+                return BadRequest(new { message = "you can't edit this item", code = 400 });
+            }
+            if (!GetUser(userId))
             {
                 return BadRequest(new { message = "you are not authorized to edit this item", code = 400 });
             }
@@ -200,8 +211,11 @@ namespace Louver.Controllers
              var clientFile = _context.ClientFiles.Include(x=>x.ClientFileDetails).FirstOrDefault(x=>x.ClientFileId==id);
              int lastClientFileId = _context.ClientFiles.Max(item => item.ClientFileId);
             clientFile.ClientFileId = lastClientFileId+1;
+          // var anClientFileItem = await _context.AnClientFileItems.Include(x => x.AnClientFileDetails).ThenInclude(c => c.Catgeory).Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).FirstOrDefaultAsync(x => x.ClientFileiD == id);
 
             _context.ClientFiles.Add(clientFile);
+            //_context.AnClientFileItems.Add(anClientFileItem);
+
             try
             {
 
