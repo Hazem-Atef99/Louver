@@ -5,7 +5,7 @@ namespace Louver.Models;
 
 public partial class AnClientFileItem
 {
-    public int ClientFileitemId { get; set; } 
+    public int ClientFileitemId { get; set; }
 
     public int? ClientFileiD { get; set; }
 

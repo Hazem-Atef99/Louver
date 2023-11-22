@@ -128,7 +128,7 @@ namespace Louver.Controllers
             _context.AnClientFileItems.Add(anClientFileItem);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAnClientFileItem", new { id = anClientFileItem.ClientFileitemId }, anClientFileItem);
+            return Ok(new {message="ClientFileItem Added Successfully",code=200});
         }
 
         // DELETE: api/AnClientFileItems/5

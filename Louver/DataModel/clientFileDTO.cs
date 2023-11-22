@@ -6,7 +6,7 @@
 
         public int? FileNo { get; set; }
         public string? ClientClientName { get; set; }
-        public string? ClientFilePropertyKitchenTypeDesc { get; set; }
+        public string? KitchenTypeDes { get; set; }
         public DateTime? FileDate { get; set; }
         public DateTime? TarkeebDate { get; set; }
         public DateTime? CreationDate { get; set; }

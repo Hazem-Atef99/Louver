@@ -13,6 +13,7 @@ using AutoMapper;
 using Louver.DataModel;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.CodeAnalysis.RulesetToEditorconfig;
 
 namespace Louver.Controllers
 {
@@ -64,6 +65,7 @@ namespace Louver.Controllers
               return BadRequest();
           } 
             var clientFileData = await _context.ClientFiles.Include(c => c.Client).Include(c => c.ClientFileProperties).FirstOrDefaultAsync(c => c.ClientFileId == id);
+            var clientFileProberty = await _context.ClientFileProperties.ToListAsync();
             var result =_mapper.Map<clientFileDTO>(clientFileData);
          
             if (clientFileData == null)
@@ -109,10 +111,7 @@ namespace Louver.Controllers
         public async Task<IActionResult> editFinalStatus(int id , int FinalStatusId,int userId)
         {
             var clientfile = await GetById(id);
-            if (clientfile.FinalStatusId==1)
-            {
-                return BadRequest(new { message = "you can't edit this item", code = 400 });
-            }
+          
             if (!GetUser(userId) )
             {
                 return BadRequest(new { message = "you are not authorized to edit this item", code = 400 });
@@ -208,12 +207,14 @@ namespace Louver.Controllers
             //var sqlStr1 = $"SELECT [ClientFileID], [FileNo],[FileDate],[ActionByDate],[ActionByHour],[ClientNeed],[CreatedBy],[CreationDate],[Modifiedby] ,[ModificationDate],[ClientID],[DeviceNotes],[Attachment1],[Attachment2],[KitchenHeight] ,[Discount] ,[TarkeebDate] ,[DesignerID] ,[DesignerDate] ,[DiscountType] ,[ContractStatusID] ,[ContractDate] ,[ProjectManager] ,[Sitet] ,[Structure] ,[Remarks] ,[FileTypeID] ,[Project] ,[Owner] ,[Contractor] ,[AttentionMr] ,[ContractorTel] ,[AttentionMrTel] ,[InternalDoorModel] ,[ExternalDoorModel] ,[InternalDoorQuantity] ,[ExternalDoorQuantity] ,[Remarks2] ,[Measurmentid] ,[MeasurmentDate] ,[KitchecnModelID] ,[additionaldiscount] ,[AdditionalNotes] ,[AdditionalAmount] ,[PatternType] ,[KitchenLocation] ,[Notes] ,[SalesID] ,[DesignOrder] ,[ContractNo] ,[OfferNo] ,[TopDiscount] ,[CombinationPeriod] ,[StatusID] ,[AccessoryDiscount] ,[FactoryNotes] ,[FactoryConfirmID] ,[DesignStatusID] ,[Follow] ,[SentToFactoryDate] ,[AllPrice] ,[StartWeek] ,[StartMonth] ,[InvoiceNo] ,[InvoiceDate] ,[WindowPrefix] ,[RelatedClientFileID],[WithTax],[FinalStatusID],[clientFileStatus] from ClientFile Where ClientFIleID = {id}";
             //var sqlstr2 = $" SELECT  [DetailID] ,[TypeID] ,[CatgeoryID] ,[Width] ,[Hieght] ,[Length] ,[QTY] ,[CreatedBy] ,[CreationDate] ,[ModifiedBy] ,[ModificationDate] from AN_ClientFileDetail Where ClientFIleID = {id}";
             //List<ClientFile> clientFile = new List<ClientFile>();
-             var clientFile = _context.ClientFiles.Include(x=>x.ClientFileDetails).FirstOrDefault(x=>x.ClientFileId==id);
-             int lastClientFileId = _context.ClientFiles.Max(item => item.ClientFileId);
+             var clientFile = await _context.ClientFiles.Include(x=>x.ClientFileDetails).Include(x=>x.AnClientFileItems).FirstOrDefaultAsync(x=>x.ClientFileId==id);
+            var anClientFileItem = await _context.AnClientFileItems.Include(x => x.AnClientFileDetails).ThenInclude(c => c.Catgeory).Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).Where(x =>x.ClientFileiD==id).ToListAsync();
+            int lastClientFileId = _context.ClientFiles.Max(item => item.ClientFileId);
             clientFile.ClientFileId = lastClientFileId+1;
-          // var anClientFileItem = await _context.AnClientFileItems.Include(x => x.AnClientFileDetails).ThenInclude(c => c.Catgeory).Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).FirstOrDefaultAsync(x => x.ClientFileiD == id);
-
+            // var anClientFileItem = await _context.AnClientFileItems.Include(x => x.AnClientFileDetails).ThenInclude(c => c.Catgeory).Include(x => x.Unit).Include(x => x.GrainNavigation).Include(x => x.Material).FirstOrDefaultAsync(x => x.ClientFileiD == id);
+            var results = _mapper.Map<IEnumerable<AnClientFileItemDTO>>(anClientFileItem);
             _context.ClientFiles.Add(clientFile);
+            _context.AddRange(results);
             //_context.AnClientFileItems.Add(anClientFileItem);
 
             try

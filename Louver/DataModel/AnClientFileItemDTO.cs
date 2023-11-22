@@ -4,7 +4,6 @@ namespace Louver.DataModel
 {
     public class AnClientFileItemDTO
     {
-        public int ClientFileitemId { get; set; }
 
         public int? ClientFileiD { get; set; }
 
@@ -29,7 +28,18 @@ namespace Louver.DataModel
         public int? ModifiedBy { get; set; }
 
         public DateTime? ModificationDate { get; set; }
-        public virtual ICollection<AnClientFileDetailDTO> AnClientFileDetailsDTO { get; set; } = new List<AnClientFileDetailDTO>();
+
+        public virtual ICollection<AnClientFileDetail> AnClientFileDetails { get; set; } = new List<AnClientFileDetail>();
+
+        public virtual ClientFile? ClientFile { get; set; }
+
+        public virtual AnCuttingListCatgeory? CuttingListCategory { get; set; }
+
+        public virtual Status? GrainNavigation { get; set; }
+
+        public virtual Status? Material { get; set; }
+
+        public virtual Status? Unit { get; set; }
 
     }
 }
